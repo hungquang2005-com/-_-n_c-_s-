@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(pageTitle,pageStyles,pageScripts,content)">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Hung Gaming Shop - laptop, PC gaming và phụ kiện điện tử chính hãng"/>
+  <title th:text="${pageTitle} + ' | Hung Gaming Shop'">Hung Gaming Shop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" th:href="@{/css/user/style.css}"/>
+  <link rel="stylesheet" th:href="@{/css/user/animations.css}"/>
+  <th:block th:replace="${pageStyles}"></th:block>
+</head>
+<body>
+<div class="alert-stack">
+  <div th:if="${message}" class="alert alert-success">
+    <i class="fa-solid fa-circle-check"></i>
+    <span th:text="${message}"></span>
+    <button type="button" class="alert-close" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div th:if="${error}" class="alert alert-error">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span th:text="${error}"></span>
+    <button type="button" class="alert-close" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="top-strip">
+    <span>Miễn phí giao hàng từ 500K</span>
+    <span>Bảo hành chính hãng</span>
+    <span>Hotline: 1800 6868</span>
+  </div>
+  <nav class="navbar" id="mainNav">
+    <a class="brand" th:href="@{/}" aria-label="Hung Gaming Shop">
+      <span class="brand-mark"><i class="fa-solid fa-bolt"></i></span>
+      <span class="brand-copy">Hung<span>Gaming</span></span>
+    </a>
+
+    <form class="nav-search" th:action="@{/products}" method="get">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" name="keyword" placeholder="Tìm laptop, bàn phím, màn hình..." th:value="${keyword}" autocomplete="off"/>
+    </form>
+
+    <div class="nav-links">
+      <a th:href="@{/}">Trang chủ</a>
+      <a th:href="@{/products}">Sản phẩm</a>
+      <a th:href="@{/about}">Giới thiệu</a>
+      <a th:href="@{/contact}">Liên hệ</a>
+      <a th:href="@{/orders}">Đơn hàng</a>
+    </div>
+
+    <div class="nav-actions">
+      <a th:href="@{/cart}" class="icon-btn" data-tip="Giỏ hàng">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span th:if="${cartCount != null and cartCount > 0}" class="cart-badge" th:text="${cartCount}"></span>
+      </a>
+      <a sec:authorize="!isAuthenticated()" th:href="@{/auth/login}" class="icon-btn" data-tip="Đăng nhập">
+        <i class="fa-solid fa-user"></i>
+      </a>
+      <div sec:authorize="isAuthenticated()" class="account-menu">
+        <button type="button" class="icon-btn" data-tip="Tài khoản"><i class="fa-solid fa-circle-user"></i></button>
+        <div class="account-dropdown">
+          <strong sec:authentication="name">user@email.com</strong>
+          <a th:href="@{/orders}"><i class="fa-solid fa-box"></i> Đơn hàng</a>
+          <a th:href="@{/auth/logout}"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
+        </div>
+      </div>
+      <button class="menu-toggle" type="button" aria-label="Mở menu" aria-expanded="false">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-panel" id="mobileMenu">
+    <form th:action="@{/products}" method="get" class="mobile-search">
+      <input type="text" name="keyword" placeholder="Tìm kiếm sản phẩm..." th:value="${keyword}"/>
+      <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+    <a th:href="@{/}">Trang chủ</a>
+    <a th:href="@{/products}">Sản phẩm</a>
+    <a th:href="@{/about}">Giới thiệu</a>
+    <a th:href="@{/contact}">Liên hệ</a>
+    <a th:href="@{/orders}">Đơn hàng</a>
+    <a th:href="@{/cart}">Giỏ hàng</a>
+    <a sec:authorize="!isAuthenticated()" th:href="@{/auth/login}">Đăng nhập</a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/orders}">Đơn hàng</a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/auth/logout}">Đăng xuất</a>
+  </div>
+</header>
+
+<main>
+  <th:block th:replace="${content}"></th:block>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-main">
+    <div class="footer-brand">
+      <a class="brand" th:href="@{/}">
+        <span class="brand-mark"><i class="fa-solid fa-bolt"></i></span>
+        <span class="brand-copy">Hung<span>Gaming</span></span>
+      </a>
+      <p>Shop thương mại điện tử chuyên laptop, PC gaming, linh kiện và phụ kiện công nghệ chính hãng.</p>
+      <div class="socials">
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+      </div>
+    </div>
+    <div>
+      <h3>Danh mục</h3>
+      <a th:href="@{/products(category='Laptop')}">Laptop</a>
+      <a th:href="@{/products(category='PC Gaming')}">PC Gaming</a>
+      <a th:href="@{/products(category='Màn hình')}">Màn hình</a>
+      <a th:href="@{/products(category='Bàn phím')}">Bàn phím</a>
+      <a th:href="@{/products(category='Tai nghe')}">Tai nghe</a>
+    </div>
+    <div>
+      <h3>Hỗ trợ</h3>
+      <a th:href="@{/about}">Về chúng tôi</a>
+      <a th:href="@{/contact}">Liên hệ</a>
+      <a href="#">Chính sách bảo hành</a>
+      <a href="#">Đổi trả 7 ngày</a>
+      <a href="#">Hướng dẫn mua hàng</a>
+    </div>
+    <div>
+      <h3>Liên hệ</h3>
+      <p><i class="fa-solid fa-location-dot"></i> 123 Công Nghệ, Quận 1, TP.HCM</p>
+      <p><i class="fa-solid fa-phone"></i> 1800 6868</p>
+      <p><i class="fa-solid fa-envelope"></i> support@hunggaming.vn</p>
+      <p><i class="fa-solid fa-clock"></i> 8:00 - 22:00 mỗi ngày</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Hung Gaming Shop. All rights reserved.</span>
+    <span>Thiết kế cân bằng, mượt và tối ưu cho mua sắm.</span>
+  </div>
+</footer>
+
+<script th:src="@{/js/user/main.js}"></script>
+<th:block th:unless="${#strings.isEmpty(pageScripts)}"
+          th:replace="${pageScripts}">
+</th:block>
+</body>
+</html>

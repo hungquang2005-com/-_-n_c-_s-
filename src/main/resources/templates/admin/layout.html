@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Admin Dashboard - TechZone"/>
+  <title th:text="${pageTitle} + ' | Admin - TechZone'">Admin - TechZone</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>"/>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Admin CSS -->
+  <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}"/>
+  <link rel="stylesheet" th:href="@{/css/admin/auth.css}"/>
+
+  <!-- Page-specific CSS -->
+  <th:block th:replace="${pageStyles}"></th:block>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     FLASH ALERTS
+═══════════════════════════════════════ -->
+<div class="alert-container">
+  <div th:if="${message}" class="alert alert-success">
+    <i class="fa-solid fa-circle-check"></i>
+    <span th:text="${message}"></span>
+    <span class="alert-close"><i class="fa-solid fa-xmark"></i></span>
+  </div>
+  <div th:if="${error}" class="alert alert-error">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span th:text="${error}"></span>
+    <span class="alert-close"><i class="fa-solid fa-xmark"></i></span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ADMIN NAVBAR
+═══════════════════════════════════════ -->
+<nav class="admin-navbar">
+  <div class="admin-navbar-inner">
+    <div class="admin-logo">
+      <a th:href="@{/admin/dashboard}">
+        <i class="fa-solid fa-bolt"></i> Admin Panel
+      </a>
+    </div>
+    <div class="admin-nav-menu">
+      <a th:href="@{/admin/dashboard}" class="admin-nav-link">
+        <i class="fa-solid fa-chart-line"></i> Dashboard
+      </a>
+      <a th:href="@{/admin/products}" class="admin-nav-link">
+        <i class="fa-solid fa-box"></i> Sản phẩm
+      </a>
+      <a th:href="@{/admin/orders}" class="admin-nav-link">
+        <i class="fa-solid fa-receipt"></i> Đơn hàng
+      </a>
+    </div>
+    <div class="admin-nav-right">
+      <span class="admin-user-name" sec:authentication="name"></span>
+      <a th:href="@{/auth/logout}" class="admin-nav-link logout">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════ -->
+<main class="admin-main">
+  <div class="admin-container">
+    <!-- Page Content -->
+    <th:block th:replace="${content}"></th:block>
+  </div>
+</main>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer class="admin-footer">
+  <p>&copy; 2025 TechZone Admin Dashboard. All rights reserved.</p>
+</footer>
+
+<!-- Page Scripts -->
+<script th:src="@{/js/admin/dashboard.js}"></script>
+<th:block th:replace="${pageScripts}"></th:block>
+</body>
+</html>

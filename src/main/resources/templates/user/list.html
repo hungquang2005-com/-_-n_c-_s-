@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{user/layout :: layout(
+        pageTitle='Sản phẩm',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head><style></style></head>
+<body>
+<main-content>
+  <section class="page-hero compact">
+    <span class="eyebrow dark">Shop electronics</span>
+    <h1>
+      <th:block th:if="${keyword != null}">Kết quả cho “<span th:text="${keyword}"></span>”</th:block>
+      <th:block th:if="${selectedCategory != null and keyword == null}" th:text="${selectedCategory}">Danh mục</th:block>
+      <th:block th:if="${keyword == null and selectedCategory == null}">Tất cả sản phẩm</th:block>
+    </h1>
+    <p>Lọc nhanh laptop, PC, màn hình và phụ kiện công nghệ chính hãng.</p>
+  </section>
+
+  <section class="shop-layout section">
+    <aside class="filter-panel reveal-left">
+      <h2>Bộ lọc</h2>
+      <form th:action="@{/products}" method="get" class="filter-search">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm sản phẩm..."/>
+        <button type="submit"><i class="fa-solid fa-search"></i></button>
+      </form>
+      <a th:href="@{/products}" class="filter-link" th:classappend="${keyword == null and selectedCategory == null} ? ' active' : ''">
+        <i class="fa-solid fa-layer-group"></i> Tất cả
+      </a>
+      <th:block th:if="${categories != null and !#lists.isEmpty(categories)}">
+        <a th:each="cat : ${categories}" th:href="@{/products(category=${cat})}" class="filter-link" th:classappend="${selectedCategory == cat} ? ' active' : ''">
+          <i class="fa-solid fa-tag"></i> <span th:text="${cat}">Danh mục</span>
+        </a>
+      </th:block>
+      <a th:if="${keyword != null or selectedCategory != null}" th:href="@{/products}" class="filter-link clear">
+        <i class="fa-solid fa-xmark"></i> Xóa bộ lọc
+      </a>
+    </aside>
+
+    <div class="shop-content">
+      <div class="shop-toolbar reveal">
+        <span th:if="${products != null}">Tìm thấy <strong th:text="${#lists.size(products)}">0</strong> sản phẩm</span>
+        <span th:if="${products == null}">Chưa có sản phẩm</span>
+        <select id="sortSelect" aria-label="Sắp xếp sản phẩm">
+          <option value="">Sắp xếp mặc định</option>
+          <option value="price-asc">Giá tăng dần</option>
+          <option value="price-desc">Giá giảm dần</option>
+          <option value="name">Tên A-Z</option>
+        </select>
+      </div>
+
+      <div class="product-grid" id="productsGrid" th:if="${products != null and !#lists.isEmpty(products)}">
+        <article class="product-card reveal" th:each="product,iter : ${products}" th:style="'--delay:' + ${iter.index * 55} + 'ms'">
+          <a th:href="@{/products/{id}(id=${product.id})}" class="product-media">
+            <img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" th:alt="${product.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+            <div class="product-fallback" th:style="${product.imageUrl != null} ? 'display:none' : ''"><i class="fa-solid fa-microchip"></i></div>
+            <span th:if="${product.isFeatured}" class="badge">Hot</span>
+            <span th:if="${product.stock == 0}" class="badge muted">Hết hàng</span>
+          </a>
+          <div class="product-info">
+            <span class="product-category" th:text="${product.category}">Category</span>
+            <h3><a th:href="@{/products/{id}(id=${product.id})}" th:text="${product.name}">Tên sản phẩm</a></h3>
+            <div class="product-row">
+              <strong th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT') + ' ₫'}">0 ₫</strong>
+              <span th:text="${product.stock == 0} ? 'Hết hàng' : ('Còn ' + product.stock)">Còn hàng</span>
+            </div>
+            <form th:action="@{/cart/add}" method="post">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+              <input type="hidden" name="productId" th:value="${product.id}"/>
+              <input type="hidden" name="quantity" value="1"/>
+              <button type="submit" class="btn btn-small btn-primary" th:disabled="${product.stock == 0}">
+                <i class="fa-solid fa-cart-plus"></i> Thêm giỏ
+              </button>
+            </form>
+          </div>
+        </article>
+      </div>
+
+      <div class="empty-state reveal" th:if="${products == null or #lists.isEmpty(products)}">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <h2>Không tìm thấy sản phẩm</h2>
+        <p>Thử từ khóa khác hoặc quay về toàn bộ sản phẩm.</p>
+        <a th:href="@{/products}" class="btn btn-primary">Xem tất cả</a>
+      </div>
+    </div>
+  </section>
+</main-content>
+<script></script>
+</body>
+</html>

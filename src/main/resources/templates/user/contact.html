@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{user/layout :: layout(
+        pageTitle='Liên hệ',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head>
+  <style>
+    .contact-grid {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .contact-card {
+      padding: 26px;
+      border-radius: var(--radius);
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .contact-card h2 { margin: 0 0 16px; letter-spacing: -0.04em; }
+    .contact-item { display: flex; gap: 12px; margin: 16px 0; color: var(--muted); line-height: 1.6; }
+    .contact-item i { color: var(--brand); margin-top: 4px; }
+    .contact-form { display: grid; gap: 14px; }
+    .contact-form input, .contact-form textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px 14px;
+      outline: 0;
+      background: #fbfaf6;
+    }
+    .contact-form textarea { min-height: 150px; resize: vertical; }
+    @media (max-width: 780px) { .contact-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<main-content>
+  <section class="page-hero compact">
+    <span class="eyebrow dark">Contact</span>
+    <h1>Cần tư vấn laptop, PC hoặc phụ kiện?</h1>
+    <p>Gửi thông tin cho Hung Gaming Shop, đội ngũ hỗ trợ sẽ phản hồi và gợi ý sản phẩm phù hợp nhu cầu của bạn.</p>
+  </section>
+
+  <section class="section contact-grid">
+    <div class="contact-card reveal-left">
+      <h2>Thông tin cửa hàng</h2>
+      <div class="contact-item"><i class="fa-solid fa-location-dot"></i><span>123 Công Nghệ, Quận 1, TP.HCM</span></div>
+      <div class="contact-item"><i class="fa-solid fa-phone"></i><span>1800 6868<br/>8:00 - 22:00 mỗi ngày</span></div>
+      <div class="contact-item"><i class="fa-solid fa-envelope"></i><span>support@hunggaming.vn</span></div>
+      <div class="contact-item"><i class="fa-solid fa-truck-fast"></i><span>Giao hàng toàn quốc, hỗ trợ kiểm tra hàng khi nhận.</span></div>
+    </div>
+
+    <form class="contact-card contact-form reveal-right" method="post" action="#">
+      <h2>Gửi yêu cầu</h2>
+      <input type="text" name="name" placeholder="Họ và tên" required/>
+      <input type="email" name="email" placeholder="Email" required/>
+      <input type="tel" name="phone" placeholder="Số điện thoại"/>
+      <textarea name="message" placeholder="Bạn cần tư vấn sản phẩm nào?" required></textarea>
+      <button type="submit" class="btn btn-primary">Gửi liên hệ</button>
+    </form>
+  </section>
+</main-content>
+<script></script>
+</body>
+</html>

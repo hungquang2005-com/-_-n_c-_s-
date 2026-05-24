@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: html(
+        pageTitle='Dang nhap Admin',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head>
+  <style>
+    .admin-login-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1f2e, #0d1421);
+      padding: 2rem;
+    }
+    .admin-login-form {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 8px;
+      padding: 3rem;
+      width: 100%;
+      max-width: 400px;
+      backdrop-filter: blur(10px);
+    }
+    .admin-login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .admin-login-header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #00d4ff;
+    }
+    .admin-form-group {
+      margin-bottom: 1.5rem;
+    }
+    .admin-form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+    .admin-form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 4px;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+    .admin-form-group input:focus {
+      outline: none;
+      border-color: #00d4ff;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    }
+    .admin-password-field {
+      position: relative;
+    }
+    .admin-password-field input {
+      padding-right: 44px;
+    }
+    .admin-password-toggle {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: #9db7c8;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      transition: all 0.2s ease;
+    }
+    .admin-password-toggle:hover {
+      color: #00d4ff;
+      background: rgba(0, 212, 255, 0.12);
+    }
+    .admin-btn-login {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, #00d4ff, #0099cc);
+      border: none;
+      border-radius: 4px;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+    .admin-btn-login:hover {
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+      transform: translateY(-2px);
+    }
+    .admin-error-msg {
+      background: rgba(255, 50, 50, 0.1);
+      border: 1px solid rgba(255, 50, 50, 0.3);
+      color: #ff6b6b;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<main-content>
+  <div class="admin-login-container">
+    <form class="admin-login-form" method="post" th:action="@{/auth/login}">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+      <div class="admin-login-header">
+        <h1><i class="fa-solid fa-bolt"></i></h1>
+        <h2>Admin Login</h2>
+      </div>
+
+      <div th:if="${error}" class="admin-error-msg" th:text="${error}"></div>
+      <div th:if="${message}" class="admin-error-msg" style="border-color: rgba(0, 200, 100, 0.3); color: #00c864;" th:text="${message}"></div>
+
+      <div class="admin-form-group">
+        <label for="loginId">Email hoặc tên đăng nhập:</label>
+        <input type="text" id="loginId" name="loginId" placeholder="admin hoặc admin@shop.com" required/>
+      </div>
+
+      <div class="admin-form-group">
+        <label for="password">Password:</label>
+        <div class="admin-password-field">
+          <input type="password" id="password" name="password" placeholder="******" required/>
+          <button class="admin-password-toggle" type="button" data-toggle-password="password" aria-label="Hiện mật khẩu">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="admin-btn-login">
+        <i class="fa-solid fa-arrow-right"></i> Dang nhap
+      </button>
+    </form>
+  </div>
+</main-content>
+<script>
+document.querySelectorAll('[data-toggle-password]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const input = document.getElementById(button.dataset.togglePassword);
+    const icon = button.querySelector('i');
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    icon.className = show ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+    button.setAttribute('aria-label', show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+  });
+});
+</script>
+</body>
+</html>

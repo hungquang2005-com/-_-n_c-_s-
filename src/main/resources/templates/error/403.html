@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Không có quyền truy cập</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: Inter, system-ui, sans-serif;
+      color: #17211c;
+      background: #f3f1ec;
+    }
+    .box {
+      width: min(520px, calc(100% - 32px));
+      padding: 34px;
+      border-radius: 8px;
+      text-align: center;
+      background: #fff;
+      border: 1px solid rgba(23, 26, 24, 0.12);
+      box-shadow: 0 22px 60px rgba(24, 31, 28, 0.12);
+    }
+    h1 { margin: 0 0 10px; font-size: 42px; letter-spacing: -0.06em; }
+    p { color: #69716d; line-height: 1.7; }
+    a {
+      display: inline-flex;
+      margin-top: 18px;
+      min-height: 44px;
+      padding: 0 18px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      color: #fff;
+      background: #0f4f3f;
+      text-decoration: none;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+<div class="box">
+  <h1>403</h1>
+  <p>Bạn không có quyền truy cập trang này. Hãy đăng nhập bằng tài khoản phù hợp hoặc quay về trang chủ.</p>
+  <a th:href="@{/}">Về trang chủ</a>
+</div>
+</body>
+</html>

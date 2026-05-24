@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{user/layout :: layout(
+        pageTitle='Giới thiệu',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head><style></style></head>
+<body>
+<main-content>
+  <section class="page-hero">
+    <span class="eyebrow dark">About Hung Gaming</span>
+    <h1>Cửa hàng công nghệ dành cho người cần sản phẩm đúng, đẹp và bền</h1>
+    <p>Hung Gaming Shop tập trung vào laptop, PC gaming, linh kiện và phụ kiện điện tử chính hãng. Giao diện mua sắm được thiết kế rõ ràng để khách chọn nhanh, so sánh dễ và đặt hàng tự tin.</p>
+  </section>
+
+  <section class="feature-split section">
+    <div class="split-text reveal-left">
+      <span class="eyebrow dark">Cam kết</span>
+      <h2>Tư vấn thật, sản phẩm thật, bảo hành minh bạch</h2>
+      <p>Chúng tôi ưu tiên cấu hình phù hợp nhu cầu hơn là bán món đắt nhất. Mỗi sản phẩm đều có thông tin rõ, tình trạng tồn kho, giá và chính sách hỗ trợ sau mua.</p>
+      <a th:href="@{/products}" class="btn btn-primary">Xem sản phẩm</a>
+    </div>
+    <img class="split-image reveal-right" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=85" alt="Không gian làm việc công nghệ"/>
+  </section>
+
+  <section class="section review-band reveal">
+    <div><strong>100%</strong><span>Sản phẩm chính hãng</span></div>
+    <blockquote>Bảo hành 12-24 tháng tùy dòng sản phẩm.</blockquote>
+    <blockquote>Giao hàng nhanh tại TP.HCM và toàn quốc.</blockquote>
+    <blockquote>Hỗ trợ tư vấn cấu hình trước khi mua.</blockquote>
+  </section>
+</main-content>
+<script></script>
+</body>
+</html>

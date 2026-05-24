@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{user/layout :: layout(
+        pageTitle='Giỏ hàng',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head>
+  <style>
+    .cart-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 24px;
+      align-items: start;
+    }
+    .cart-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      overflow: hidden;
+    }
+    .cart-row {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) 170px 44px;
+      gap: 16px;
+      align-items: center;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .cart-row:last-child { border-bottom: 0; }
+    .cart-thumb {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f3f1ec;
+      display: grid;
+      place-items: center;
+      color: var(--brand);
+      font-size: 28px;
+    }
+    .cart-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .cart-name { margin: 0 0 6px; font-weight: 800; }
+    .cart-price { color: var(--brand); font-weight: 800; }
+    .cart-summary {
+      position: sticky;
+      top: 116px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      margin: 12px 0;
+      color: var(--muted);
+    }
+    .summary-total {
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 900;
+    }
+    @media (max-width: 850px) {
+      .cart-layout { grid-template-columns: 1fr; }
+      .cart-summary { position: static; }
+      .cart-row { grid-template-columns: 72px 1fr; }
+      .cart-row form, .cart-row .icon-btn { grid-column: 2; }
+    }
+  </style>
+</head>
+<body>
+<main-content>
+  <section class="page-hero compact">
+    <span class="eyebrow dark">Shopping cart</span>
+    <h1>Giỏ hàng của bạn</h1>
+    <p>Kiểm tra sản phẩm, cập nhật số lượng và tiến hành thanh toán.</p>
+  </section>
+
+  <section class="section cart-layout">
+    <div class="cart-panel reveal-left" th:if="${cart != null and cart.items != null and !#lists.isEmpty(cart.items)}">
+      <div class="cart-row" th:each="item : ${cart.items}">
+        <a class="cart-thumb" th:href="@{/products/{id}(id=${item.product.id})}">
+          <img th:if="${item.product.imageUrl != null}" th:src="${item.product.imageUrl}" th:alt="${item.product.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/>
+          <i th:style="${item.product.imageUrl != null} ? 'display:none' : ''" class="fa-solid fa-laptop"></i>
+        </a>
+        <div>
+          <p class="cart-name" th:text="${item.product.name}">Tên sản phẩm</p>
+          <span class="product-category" th:text="${item.product.category}">Danh mục</span>
+          <div class="cart-price" th:text="${#numbers.formatDecimal(item.product.price,0,'COMMA',0,'POINT') + ' ₫'}">0 ₫</div>
+        </div>
+        <form th:action="@{/cart/update}" method="post" class="qty-control">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          <input type="hidden" name="itemId" th:value="${item.id}"/>
+          <button type="button" class="qty-btn" data-action="minus">-</button>
+          <input class="qty-input" type="number" name="quantity" th:value="${item.quantity}" min="1"/>
+          <button type="submit" class="qty-btn"><i class="fa-solid fa-check"></i></button>
+        </form>
+        <form th:action="@{/cart/remove}" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          <input type="hidden" name="itemId" th:value="${item.id}"/>
+          <button type="submit" class="icon-btn" aria-label="Xóa sản phẩm"><i class="fa-solid fa-trash"></i></button>
+        </form>
+      </div>
+    </div>
+
+    <div class="empty-state reveal-left" th:if="${cart == null or cart.items == null or #lists.isEmpty(cart.items)}">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <h2>Giỏ hàng đang trống</h2>
+      <p>Chọn một vài món công nghệ yêu thích rồi quay lại đây nhé.</p>
+      <a th:href="@{/products}" class="btn btn-primary">Mua sắm ngay</a>
+    </div>
+
+    <aside class="cart-summary reveal-right">
+      <h2>Tóm tắt đơn hàng</h2>
+      <div class="summary-line">
+        <span>Số lượng</span>
+        <strong th:text="${cart != null ? cart.totalQuantity : 0}">0</strong>
+      </div>
+      <div class="summary-line summary-total">
+        <span>Tổng cộng</span>
+        <strong th:text="${cart != null ? (#numbers.formatDecimal(cart.totalAmount,0,'COMMA',0,'POINT') + ' ₫') : '0 ₫'}">0 ₫</strong>
+      </div>
+      <a th:href="@{/checkout/info}" class="btn btn-primary btn-wide" style="margin-top:18px;">Thanh toán</a>
+      <a th:href="@{/products}" class="btn btn-light btn-wide" style="margin-top:10px;">Tiếp tục mua</a>
+    </aside>
+  </section>
+</main-content>
+<script></script>
+</body>
+</html>

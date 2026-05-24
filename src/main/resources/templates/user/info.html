@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{user/layout :: layout(
+        pageTitle='Thông tin giao hàng',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head>
+  <style>
+    .checkout-wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 34px auto 60px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 24px;
+      align-items: start;
+    }
+    .checkout-card {
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: 0 12px 34px rgba(24, 31, 28, .08);
+    }
+    .checkout-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 22px;
+      font-size: 24px;
+      letter-spacing: -0.04em;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 24px;
+    }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .required {
+      color: var(--danger);
+      transition: color .2s ease;
+    }
+    .field.valid .required { color: var(--success); }
+    .field.invalid .form-input,
+    .field.invalid .form-select {
+      border-color: rgba(184, 50, 50, .55);
+      box-shadow: 0 0 0 4px rgba(184, 50, 50, .08);
+    }
+    .form-input,
+    .form-select {
+      width: 100%;
+      min-height: 52px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      outline: 0;
+      background: #fbfaf6;
+      color: var(--ink);
+      font-size: 16px;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    textarea.form-input {
+      min-height: 110px;
+      padding-top: 14px;
+      resize: vertical;
+    }
+    .form-input:focus,
+    .form-select:focus {
+      border-color: rgba(15, 79, 63, .42);
+      box-shadow: 0 0 0 4px rgba(15, 79, 63, .08);
+    }
+    .manual-input {
+      display: none;
+      margin-top: 10px;
+    }
+    .manual-input.show {
+      display: block;
+    }
+    .shipping-options {
+      display: grid;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .shipping-options label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfaf6;
+      cursor: pointer;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .summary {
+      position: sticky;
+      top: 110px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 12px;
+      margin: 16px 0;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+    .summary-thumb {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #f3f1ec;
+      color: var(--brand);
+    }
+    .summary-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .summary-name { font-weight: 800; font-size: 14px; }
+    .summary-meta { color: var(--muted); font-size: 13px; }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 12px 0;
+      color: var(--muted);
+    }
+    .summary-total {
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 900;
+    }
+    @media (max-width: 860px) {
+      .checkout-wrap { grid-template-columns: 1fr; }
+      .summary { position: static; }
+    }
+    @media (max-width: 620px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<main-content>
+  <section class="page-hero compact">
+    <span class="eyebrow dark">Checkout</span>
+    <h1>Thông tin giao hàng</h1>
+    <p>Nhập đầy đủ thông tin. Dấu sao chuyển xanh khi trường hợp lệ.</p>
+  </section>
+
+  <section class="checkout-wrap">
+    <form id="shippingForm" class="checkout-card" method="post" th:action="@{/checkout/payment}">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+      <input type="hidden" id="fullAddress" name="address"/>
+
+      <h2 class="checkout-title"><i class="fa-solid fa-location-dot"></i> Địa chỉ nhận hàng</h2>
+
+      <div class="form-grid">
+        <div class="field" data-required>
+          <label for="fullName">Họ tên <span class="required">*</span></label>
+          <input id="fullName" name="fullName" class="form-input" type="text" th:value="${user != null ? user.fullName : ''}" required/>
+        </div>
+
+        <div class="field" data-required data-type="phone">
+          <label for="phone">Số điện thoại <span class="required">*</span></label>
+          <input id="phone" name="phone" class="form-input" type="tel" th:value="${user != null ? user.phone : ''}" placeholder="09xxxxxxxx" required/>
+        </div>
+
+        <div class="field full" data-required data-type="email">
+          <label for="email">Email <span class="required">*</span></label>
+          <input id="email" name="email" class="form-input" type="email" th:value="${user != null ? user.email : ''}" required/>
+        </div>
+
+        <div class="field full" data-required>
+          <label for="street">Địa chỉ cụ thể <span class="required">*</span></label>
+          <input id="street" class="form-input" type="text" placeholder="Số nhà, tên đường" required/>
+        </div>
+
+        <div class="field" data-required>
+          <label for="province">Tỉnh/Thành phố <span class="required">*</span></label>
+          <select id="province" class="form-select" required>
+            <option value="">--- Chọn tỉnh/thành phố ---</option>
+          </select>
+        </div>
+
+        <div class="field" data-required>
+          <label for="district">Quận/Huyện <span class="required">*</span></label>
+          <select id="district" class="form-select" required disabled>
+            <option value="">--- Chọn quận/huyện ---</option>
+          </select>
+          <input id="districtOther" class="form-input manual-input" type="text" placeholder="Nhập quận/huyện"/>
+        </div>
+
+        <div class="field full" data-required>
+          <label for="ward">Phường/Xã <span class="required">*</span></label>
+          <select id="ward" class="form-select" required disabled>
+            <option value="">--- Chọn phường/xã ---</option>
+          </select>
+          <input id="wardOther" class="form-input manual-input" type="text" placeholder="Nhập phường/xã"/>
+        </div>
+
+        <div class="field full">
+          <label for="note">Ghi chú thêm</label>
+          <textarea id="note" name="note" class="form-input" placeholder="Ghi chú cho nhân viên giao hàng"></textarea>
+        </div>
+      </div>
+
+      <div class="shipping-options">
+        <label>
+          <input type="radio" name="shipping" value="standard" checked/>
+          <span><strong>Giao hàng tiêu chuẩn</strong><br/><small>3-5 ngày | 0 ₫</small></span>
+        </label>
+        <label>
+          <input type="radio" name="shipping" value="express"/>
+          <span><strong>Giao hàng nhanh</strong><br/><small>1-2 ngày | 50,000 ₫</small></span>
+        </label>
+      </div>
+
+      <div class="actions">
+        <a th:href="@{/cart}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Quay lại</a>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-arrow-right"></i> Tiếp tục thanh toán</button>
+      </div>
+    </form>
+
+    <aside class="checkout-card summary">
+      <h2 class="checkout-title"><i class="fa-solid fa-receipt"></i> Tóm tắt đơn</h2>
+      <div class="summary-list" th:if="${cart != null and cart.items != null and !#lists.isEmpty(cart.items)}">
+        <div class="summary-item" th:each="item : ${cart.items}">
+          <div class="summary-thumb">
+            <img th:if="${item.product.imageUrl != null}" th:src="${item.product.imageUrl}" th:alt="${item.product.name}"/>
+            <i th:if="${item.product.imageUrl == null}" class="fa-solid fa-laptop"></i>
+          </div>
+          <div>
+            <div class="summary-name" th:text="${item.product.name}">Tên sản phẩm</div>
+            <div class="summary-meta">
+              SL: <span th:text="${item.quantity}">1</span> -
+              <span th:text="${#numbers.formatDecimal(item.subtotal,0,'COMMA',0,'POINT') + ' ₫'}">0 ₫</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="summary-row">
+        <span>Số lượng</span>
+        <strong th:text="${cart != null ? cart.totalQuantity : 0}">0</strong>
+      </div>
+      <div class="summary-row">
+        <span>Phí vận chuyển</span>
+        <strong>0 ₫</strong>
+      </div>
+      <div class="summary-row summary-total">
+        <span>Tổng cộng</span>
+        <strong th:text="${cart != null ? (#numbers.formatDecimal(cart.totalAmount,0,'COMMA',0,'POINT') + ' ₫') : '0 ₫'}">0 ₫</strong>
+      </div>
+    </aside>
+  </section>
+</main-content>
+
+<script>
+const provinceNames = [
+  'An Giang','Bà Rịa - Vũng Tàu','Bắc Giang','Bắc Kạn','Bạc Liêu','Bắc Ninh','Bến Tre','Bình Định',
+  'Bình Dương','Bình Phước','Bình Thuận','Cà Mau','Cần Thơ','Cao Bằng','Đà Nẵng','Đắk Lắk',
+  'Đắk Nông','Điện Biên','Đồng Nai','Đồng Tháp','Gia Lai','Hà Giang','Hà Nam','Hà Nội','Hà Tĩnh',
+  'Hải Dương','Hải Phòng','Hậu Giang','Hòa Bình','Hưng Yên','Khánh Hòa','Kiên Giang','Kon Tum',
+  'Lai Châu','Lâm Đồng','Lạng Sơn','Lào Cai','Long An','Nam Định','Nghệ An','Ninh Bình','Ninh Thuận',
+  'Phú Thọ','Phú Yên','Quảng Bình','Quảng Nam','Quảng Ngãi','Quảng Ninh','Quảng Trị','Sóc Trăng',
+  'Sơn La','Tây Ninh','Thái Bình','Thái Nguyên','Thanh Hóa','Thừa Thiên Huế','Tiền Giang',
+  'TP. Hồ Chí Minh','Trà Vinh','Tuyên Quang','Vĩnh Long','Vĩnh Phúc','Yên Bái'
+];
+
+const addressData = {
+  'Hà Nội': {
+    'Quận Ba Đình': ['Phường Phúc Xá', 'Phường Trúc Bạch', 'Phường Vĩnh Phúc', 'Phường Cống Vị', 'Phường Liễu Giai'],
+    'Quận Hoàn Kiếm': ['Phường Hàng Bạc', 'Phường Hàng Bài', 'Phường Hàng Bồ', 'Phường Hàng Gai', 'Phường Tràng Tiền'],
+    'Quận Đống Đa': ['Phường Cát Linh', 'Phường Văn Miếu', 'Phường Quốc Tử Giám', 'Phường Láng Thượng', 'Phường Ô Chợ Dừa'],
+    'Quận Cầu Giấy': ['Phường Dịch Vọng', 'Phường Dịch Vọng Hậu', 'Phường Quan Hoa', 'Phường Nghĩa Tân', 'Phường Yên Hòa'],
+    'Quận Hai Bà Trưng': ['Phường Bách Khoa', 'Phường Bạch Mai', 'Phường Minh Khai', 'Phường Đồng Tâm', 'Phường Vĩnh Tuy'],
+    'Huyện Đông Anh': ['Thị trấn Đông Anh', 'Xã Vĩnh Ngọc', 'Xã Kim Chung', 'Xã Hải Bối', 'Xã Nam Hồng'],
+    'Huyện Gia Lâm': ['Thị trấn Trâu Quỳ', 'Xã Đa Tốn', 'Xã Kiêu Kỵ', 'Xã Bát Tràng', 'Xã Yên Viên']
+  },
+  'TP. Hồ Chí Minh': {
+    'Quận 1': ['Phường Bến Nghé', 'Phường Bến Thành', 'Phường Cầu Kho', 'Phường Cô Giang', 'Phường Đa Kao'],
+    'Quận 3': ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 4', 'Phường Võ Thị Sáu'],
+    'Quận 7': ['Phường Tân Phú', 'Phường Tân Quy', 'Phường Tân Kiểng', 'Phường Phú Mỹ', 'Phường Bình Thuận'],
+    'Quận Bình Thạnh': ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 5', 'Phường 7'],
+    'TP. Thủ Đức': ['Phường Linh Trung', 'Phường Linh Tây', 'Phường Hiệp Bình Chánh', 'Phường Thảo Điền', 'Phường An Phú']
+  },
+  'Đà Nẵng': {
+    'Quận Hải Châu': ['Phường Hải Châu 1', 'Phường Hải Châu 2', 'Phường Thạch Thang', 'Phường Thanh Bình'],
+    'Quận Thanh Khê': ['Phường Tam Thuận', 'Phường Thanh Khê Đông', 'Phường Thanh Khê Tây', 'Phường Xuân Hà'],
+    'Quận Sơn Trà': ['Phường An Hải Bắc', 'Phường An Hải Đông', 'Phường An Hải Tây', 'Phường Mân Thái']
+  },
+  'Hải Phòng': {
+    'Quận Hồng Bàng': ['Phường Hoàng Văn Thụ', 'Phường Minh Khai', 'Phường Phan Bội Châu', 'Phường Sở Dầu'],
+    'Quận Lê Chân': ['Phường An Biên', 'Phường An Dương', 'Phường Cát Dài', 'Phường Hồ Nam'],
+    'Quận Ngô Quyền': ['Phường Cầu Đất', 'Phường Cầu Tre', 'Phường Đằng Giang', 'Phường Đông Khê']
+  },
+  'Cần Thơ': {
+    'Quận Ninh Kiều': ['Phường An Cư', 'Phường An Hòa', 'Phường Cái Khế', 'Phường Tân An'],
+    'Quận Bình Thủy': ['Phường An Thới', 'Phường Bình Thủy', 'Phường Long Hòa', 'Phường Trà An'],
+    'Quận Cái Răng': ['Phường Ba Láng', 'Phường Hưng Phú', 'Phường Hưng Thạnh', 'Phường Lê Bình']
+  }
+};
+
+const province = document.getElementById('province');
+const district = document.getElementById('district');
+const ward = document.getElementById('ward');
+const districtOther = document.getElementById('districtOther');
+const wardOther = document.getElementById('wardOther');
+const form = document.getElementById('shippingForm');
+
+function fillSelect(select, placeholder, values) {
+  select.innerHTML = `<option value="">${placeholder}</option>`;
+  values.forEach((value) => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = value;
+    select.appendChild(option);
+  });
+}
+
+function withOther(values) {
+  return [...values, 'Khác - nhập tay'];
+}
+
+function selectedDistrict() {
+  return district.value === 'Khác - nhập tay' ? districtOther.value.trim() : district.value;
+}
+
+function selectedWard() {
+  return ward.value === 'Khác - nhập tay' ? wardOther.value.trim() : ward.value;
+}
+
+function toggleManualInputs() {
+  const districtManual = district.value === 'Khác - nhập tay';
+  districtOther.classList.toggle('show', districtManual);
+  districtOther.required = districtManual;
+
+  const wardManual = ward.value === 'Khác - nhập tay' || districtManual;
+  wardOther.classList.toggle('show', wardManual);
+  wardOther.required = wardManual;
+  if (districtManual) {
+    ward.disabled = true;
+  }
+}
+
+fillSelect(province, '--- Chọn tỉnh/thành phố ---', provinceNames);
+
+province.addEventListener('change', () => {
+  const districts = province.value && addressData[province.value] ? Object.keys(addressData[province.value]) : [];
+  fillSelect(district, '--- Chọn quận/huyện ---', withOther(districts));
+  fillSelect(ward, '--- Chọn phường/xã ---', []);
+  district.disabled = !province.value;
+  ward.disabled = true;
+  districtOther.value = '';
+  wardOther.value = '';
+  toggleManualInputs();
+  validateAll();
+});
+
+district.addEventListener('change', () => {
+  const wards = province.value && addressData[province.value] && addressData[province.value][district.value]
+    ? addressData[province.value][district.value]
+    : [];
+  fillSelect(ward, '--- Chọn phường/xã ---', withOther(wards));
+  ward.disabled = !district.value || district.value === 'Khác - nhập tay';
+  wardOther.value = '';
+  toggleManualInputs();
+  validateAll();
+});
+
+ward.addEventListener('change', () => {
+  wardOther.value = '';
+  toggleManualInputs();
+  validateAll();
+});
+
+function validateField(field) {
+  const control = field.querySelector('input, select, textarea');
+  if (!field.dataset.required || !control) return true;
+  let value = control.value.trim();
+  if (control.id === 'district') value = selectedDistrict();
+  if (control.id === 'ward') value = selectedWard();
+  let valid = Boolean(value);
+  if (valid && field.dataset.type === 'email') valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  if (valid && field.dataset.type === 'phone') valid = /^(0|\+84)[0-9]{9,10}$/.test(value.replace(/\s/g, ''));
+  field.classList.toggle('valid', valid);
+  field.classList.toggle('invalid', !valid && control.dataset.touched === 'true');
+  return valid;
+}
+
+function validateAll() {
+  return Array.from(document.querySelectorAll('.field')).every(validateField);
+}
+
+document.querySelectorAll('.field input, .field select, .field textarea').forEach((control) => {
+  control.addEventListener('input', () => {
+    control.dataset.touched = 'true';
+    validateAll();
+  });
+  control.addEventListener('change', () => {
+    control.dataset.touched = 'true';
+    validateAll();
+  });
+  control.addEventListener('blur', () => {
+    control.dataset.touched = 'true';
+    validateAll();
+  });
+});
+districtOther.addEventListener('input', validateAll);
+wardOther.addEventListener('input', validateAll);
+
+form.addEventListener('submit', (event) => {
+  document.querySelectorAll('.field input, .field select').forEach((control) => control.dataset.touched = 'true');
+  if (!validateAll()) {
+    event.preventDefault();
+    return;
+  }
+  document.getElementById('fullAddress').value = [
+    document.getElementById('street').value.trim(),
+    selectedWard(),
+    selectedDistrict(),
+    province.value
+  ].filter(Boolean).join(', ');
+});
+
+validateAll();
+</script>
+</body>
+</html>

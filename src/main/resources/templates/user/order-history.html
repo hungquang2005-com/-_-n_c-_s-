@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{user/layout :: layout(
+        pageTitle='Lịch sử đơn hàng',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head>
+  <style>
+    .orders-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      animation: pageEnter 0.6s ease-out;
+    }
+
+    .orders-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .orders-header h1 {
+      font-size: 2rem;
+    }
+
+    .orders-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .order-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      animation: slideInUp 0.5s ease-out;
+    }
+
+    .order-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
+    }
+
+    .order-card-header {
+      background: rgba(0, 212, 255, 0.05);
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr auto;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .order-card-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .order-card-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+      letter-spacing: 1px;
+    }
+
+    .order-card-value {
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .order-id {
+      color: var(--accent);
+      font-family: 'Courier New', monospace;
+    }
+
+    .order-amount {
+      color: var(--accent);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-pending {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+    }
+
+    .status-confirmed {
+      background: rgba(33, 150, 243, 0.2);
+      color: #2196f3;
+    }
+
+    .status-delivered {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+    }
+
+    .status-cancelled {
+      background: rgba(244, 67, 54, 0.2);
+      color: #f44336;
+    }
+
+    .order-card-body {
+      padding: 1.5rem;
+    }
+
+    .order-items {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .order-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(0, 212, 255, 0.05);
+    }
+
+    .order-item:last-child {
+      border-bottom: none;
+    }
+
+    .order-item-name {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .order-item-qty {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .order-item-price {
+      color: var(--accent);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .order-card-footer {
+      display: flex;
+      gap: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      justify-content: flex-end;
+    }
+
+    .btn-view {
+      padding: 0.6rem 1.2rem;
+      background: linear-gradient(135deg, var(--accent), #0099cc);
+      color: #000;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .btn-view:hover {
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state p {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn-continue-shopping {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: var(--radius);
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .btn-continue-shopping:hover {
+      background: rgba(0, 212, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+<main-content>
+  <div class="orders-container">
+    <div class="orders-header">
+      <h1><i class="fa-solid fa-receipt"></i> Lịch sử đơn hàng</h1>
+    </div>
+
+    <div th:if="${orders != null and orders.size() > 0}">
+      <div class="orders-grid">
+        <div class="order-card" th:each="order : ${orders}">
+          <div class="order-card-header">
+            <div class="order-card-info">
+              <div class="order-card-label">Mã đơn hàng</div>
+              <div class="order-card-value order-id" th:text="'#' + ${order.id}"></div>
+            </div>
+            <div class="order-card-info">
+              <div class="order-card-label">Ngày đặt</div>
+              <div class="order-card-value" th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></div>
+            </div>
+            <div class="order-card-info">
+              <div class="order-card-label">Tổng tiền</div>
+              <div class="order-card-value order-amount" th:text="'₫' + ${#numbers.formatInteger(order.totalAmount, 0)}"></div>
+            </div>
+            <div class="order-card-info">
+              <div class="order-card-label">Trạng thái</div>
+              <span class="status-badge" th:classappend="'status-' + ${order.status.name().toLowerCase()}" th:text="${order.status.displayName}"></span>
+            </div>
+            <a th:href="@{/orders/{id}(id=${order.id})}" class="btn-view">
+              <i class="fa-solid fa-arrow-right"></i> Chi tiết
+            </a>
+          </div>
+
+          <div class="order-card-body">
+            <div class="order-items">
+              <div class="order-item" th:each="item : ${order.items}">
+                <div class="order-item-name" th:text="${item.productName}"></div>
+                <div class="order-item-qty" th:text="'Số lượng: ' + ${item.quantity}"></div>
+                <div class="order-item-price" th:text="'₫' + ${#numbers.formatInteger(item.subtotal, 0)}"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:if="${orders == null or orders.size() == 0}" class="empty-state">
+      <div class="empty-state-icon"><i class="fa-solid fa-inbox"></i></div>
+      <p>Bạn chưa có đơn hàng nào</p>
+      <a th:href="@{/products}" class="btn-continue-shopping">
+        <i class="fa-solid fa-shopping-bag"></i> Tiếp tục mua sắm
+      </a>
+    </div>
+  </div>
+</main-content>
+</body>
+</html>

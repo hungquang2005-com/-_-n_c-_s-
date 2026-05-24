@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{user/layout :: layout(
+        pageTitle='Trang chủ',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head>
+  <style></style>
+</head>
+<body>
+<main-content>
+  <section class="home-hero">
+    <div class="hero-showcase reveal-left">
+      <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1500&q=85" alt="Laptop và phụ kiện công nghệ"/>
+      <div class="hero-overlay"></div>
+      <div class="hero-copy">
+        <span class="eyebrow">Electronics Store</span>
+        <h1>Thiết bị công nghệ cho góc làm việc và gaming hiện đại</h1>
+        <p>Laptop, PC gaming, bàn phím, chuột, màn hình và phụ kiện chính hãng với trải nghiệm mua sắm mượt mà.</p>
+        <div class="hero-actions">
+          <a th:href="@{/products}" class="btn btn-primary"><i class="fa-solid fa-bag-shopping"></i> Mua ngay</a>
+          <a th:href="@{/products(category='Laptop')}" class="btn btn-light"><i class="fa-solid fa-laptop"></i> Xem laptop</a>
+        </div>
+      </div>
+      <div class="hero-stat">
+        <strong>98%</strong>
+        <span>khách hàng hài lòng</span>
+      </div>
+    </div>
+
+    <aside class="hero-side reveal-right">
+      <a th:href="@{/products(category='Laptop')}" class="mini-category">
+        <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=600&q=80" alt="Laptop"/>
+        <span>Laptop</span>
+      </a>
+      <a th:href="@{/products(category='Bàn phím')}" class="mini-category">
+        <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80" alt="Bàn phím"/>
+        <span>Bàn phím</span>
+      </a>
+      <a th:href="@{/products(category='Màn hình')}" class="mini-category">
+        <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80" alt="Màn hình"/>
+        <span>Màn hình</span>
+      </a>
+      <a th:href="@{/products(category='Tai nghe')}" class="mini-category">
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" alt="Tai nghe"/>
+        <span>Tai nghe</span>
+      </a>
+    </aside>
+  </section>
+
+  <section class="section">
+    <div class="section-heading reveal">
+      <div>
+        <span class="eyebrow dark">Bestselling Products</span>
+        <h2>Sản phẩm nổi bật</h2>
+      </div>
+      <a th:href="@{/products}" class="text-link">Xem thêm <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+
+    <div class="product-grid">
+      <th:block th:if="${featuredProducts != null and !#lists.isEmpty(featuredProducts)}">
+        <article class="product-card reveal" th:each="product,iter : ${featuredProducts}" th:style="'--delay:' + ${iter.index * 70} + 'ms'">
+          <a th:href="@{/products/{id}(id=${product.id})}" class="product-media">
+            <img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" th:alt="${product.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+            <div class="product-fallback" th:style="${product.imageUrl != null} ? 'display:none' : ''"><i class="fa-solid fa-laptop"></i></div>
+            <span th:if="${product.isFeatured}" class="badge">Hot</span>
+          </a>
+          <div class="product-info">
+            <span class="product-category" th:text="${product.category}">Laptop</span>
+            <h3><a th:href="@{/products/{id}(id=${product.id})}" th:text="${product.name}">Tên sản phẩm</a></h3>
+            <div class="product-row">
+              <strong th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT') + ' ₫'}">0 ₫</strong>
+              <span th:text="${product.stock == 0} ? 'Hết hàng' : ('Còn ' + product.stock)">Còn hàng</span>
+            </div>
+            <form th:action="@{/cart/add}" method="post">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+              <input type="hidden" name="productId" th:value="${product.id}"/>
+              <input type="hidden" name="quantity" value="1"/>
+              <button type="submit" class="btn btn-small btn-primary" th:disabled="${product.stock == 0}">
+                <i class="fa-solid fa-cart-plus"></i> Thêm giỏ
+              </button>
+            </form>
+          </div>
+        </article>
+      </th:block>
+
+      <th:block th:if="${featuredProducts == null or #lists.isEmpty(featuredProducts)}">
+        <article class="product-card reveal" th:each="item : ${ {'Laptop gaming RTX 4060','Bàn phím cơ RGB','Màn hình 27 inch 165Hz','Tai nghe wireless'} }">
+          <a th:href="@{/products}" class="product-media">
+            <div class="product-fallback"><i class="fa-solid fa-laptop"></i></div>
+            <span class="badge">Demo</span>
+          </a>
+          <div class="product-info">
+            <span class="product-category">Electronics</span>
+            <h3 th:text="${item}">Sản phẩm</h3>
+            <div class="product-row"><strong>2,990,000 ₫</strong><span>Còn hàng</span></div>
+            <a th:href="@{/products}" class="btn btn-small btn-primary">Xem sản phẩm</a>
+          </div>
+        </article>
+      </th:block>
+    </div>
+  </section>
+
+  <section class="feature-split section">
+    <div class="split-text reveal-left">
+      <span class="eyebrow dark">New Arrival</span>
+      <h2>Setup làm việc gọn đẹp, mạnh mẽ và đồng bộ</h2>
+      <p>Chọn nhanh combo laptop, màn hình, bàn phím, chuột và tai nghe phù hợp nhu cầu học tập, làm việc, stream hoặc gaming.</p>
+      <a th:href="@{/products(category='PC Gaming')}" class="btn btn-primary">Khám phá combo</a>
+    </div>
+    <img class="split-image reveal-right" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=85" alt="Bộ setup máy tính gaming"/>
+  </section>
+
+  <section class="section review-band reveal">
+    <div>
+      <strong>4.9/5</strong>
+      <span>Đánh giá trung bình từ khách hàng</span>
+    </div>
+    <blockquote>“Giao diện dễ mua, sản phẩm rõ thông tin, tư vấn nhanh và đóng gói rất chắc chắn.”</blockquote>
+    <blockquote>“Build PC đúng ngân sách, máy chạy mượt, bảo hành minh bạch.”</blockquote>
+    <blockquote>“Laptop chính hãng, giao trong ngày tại TP.HCM.”</blockquote>
+  </section>
+</main-content>
+<script></script>
+</body>
+</html>

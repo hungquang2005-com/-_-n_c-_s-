@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: html(
+        pageTitle='Quản lý Sản phẩm',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head>
+  <style>
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .product-header h1 {
+      font-size: 2rem;
+    }
+
+    .btn-add {
+      background: linear-gradient(135deg, #00d4ff, #0099cc);
+      color: #000;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-add:hover {
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(0, 212, 255, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .admin-table th {
+      background: rgba(0, 212, 255, 0.08);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+    }
+
+    .admin-table td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(0, 212, 255, 0.05);
+    }
+
+    .admin-table tr:hover {
+      background: rgba(0, 212, 255, 0.04);
+    }
+
+    .btn-edit, .btn-delete {
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-edit {
+      background: rgba(0, 212, 255, 0.2);
+      color: #00d4ff;
+    }
+
+    .btn-edit:hover {
+      background: rgba(0, 212, 255, 0.3);
+    }
+
+    .btn-delete {
+      background: rgba(255, 50, 50, 0.2);
+      color: #ff6b6b;
+      border: none;
+    }
+
+    .btn-delete:hover {
+      background: rgba(255, 50, 50, 0.3);
+    }
+
+    .product-image {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .price-cell {
+      color: #00d4ff;
+      font-weight: 600;
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 3rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+<main-content>
+  <div class="product-header">
+    <h1><i class="fa-solid fa-box"></i> Quản lý Sản phẩm</h1>
+    <a th:href="@{/admin/products/add}" class="btn-add">
+      <i class="fa-solid fa-plus"></i> Thêm sản phẩm
+    </a>
+  </div>
+
+  <div th:if="${products != null and products.size() > 0}">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Hình ảnh</th>
+          <th>Tên sản phẩm</th>
+          <th>Danh mục</th>
+          <th>Giá</th>
+          <th>Kho</th>
+          <th>Nổi bật</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="product : ${products}">
+          <td>
+            <img th:src="${product.imageUrl}" alt="Product" class="product-image" th:onerror="this.src='/images/placeholder.jpg'"/>
+          </td>
+          <td th:text="${product.name}"></td>
+          <td th:text="${product.category}"></td>
+          <td class="price-cell" th:text="'₫' + ${#numbers.formatInteger(product.price, 0)}"></td>
+          <td th:text="${product.stock}"></td>
+          <td th:text="${product.isFeatured ? 'Có' : 'Không'}"></td>
+          <td>
+            <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn-edit">
+              <i class="fa-solid fa-edit"></i> Sửa
+            </a>
+            <form th:action="@{/admin/products/delete/{id}(id=${product.id})}" method="post" style="display: inline;" onsubmit="return confirm('Xác nhận xóa sản phẩm này?');">
+              <button type="submit" class="btn-delete">
+                <i class="fa-solid fa-trash"></i> Xóa
+              </button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div th:if="${products == null or products.size() == 0}" class="empty-message">
+    <i class="fa-solid fa-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+    <p>Không có sản phẩm nào</p>
+  </div>
+</main-content>
+</body>
+</html>

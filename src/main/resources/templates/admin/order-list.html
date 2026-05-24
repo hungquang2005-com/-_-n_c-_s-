@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: html(
+        pageTitle='Quản lý Đơn hàng',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head>
+  <style>
+    .order-header {
+      margin-bottom: 2rem;
+    }
+
+    .order-header h1 {
+      font-size: 2rem;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(0, 212, 255, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .admin-table th {
+      background: rgba(0, 212, 255, 0.08);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+    }
+
+    .admin-table td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(0, 212, 255, 0.05);
+    }
+
+    .admin-table tr:hover {
+      background: rgba(0, 212, 255, 0.04);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-pending {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+    }
+
+    .status-confirmed {
+      background: rgba(33, 150, 243, 0.2);
+      color: #2196f3;
+    }
+
+    .status-delivered {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+    }
+
+    .status-cancelled {
+      background: rgba(244, 67, 54, 0.2);
+      color: #f44336;
+    }
+
+    .payment-status {
+      font-size: 0.85rem;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .payment-paid {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+    }
+
+    .payment-unpaid {
+      background: rgba(255, 50, 50, 0.2);
+      color: #ff6b6b;
+    }
+
+    .status-form {
+      display: inline-flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .status-select {
+      padding: 0.4rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 4px;
+      color: #fff;
+      font-size: 0.85rem;
+    }
+
+    .status-select:focus {
+      outline: none;
+      border-color: #00d4ff;
+    }
+
+    .btn-update {
+      padding: 0.4rem 0.8rem;
+      background: linear-gradient(135deg, #00d4ff, #0099cc);
+      border: none;
+      border-radius: 4px;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .btn-update:hover {
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    }
+
+    .order-amount {
+      color: #00d4ff;
+      font-weight: 600;
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 3rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+<main-content>
+  <div class="order-header">
+    <h1><i class="fa-solid fa-receipt"></i> Quản lý Đơn hàng</h1>
+  </div>
+
+  <div th:if="${orders != null and orders.size() > 0}">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Mã đơn hàng</th>
+          <th>Khách hàng</th>
+          <th>Số tiền</th>
+          <th>Phương thức TT</th>
+          <th>Trạng thái TT</th>
+          <th>Trạng thái đơn</th>
+          <th>Ngày đặt</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="order : ${orders}">
+          <td th:text="'#' + ${order.id}"></td>
+          <td th:text="${order.fullName}"></td>
+          <td class="order-amount" th:text="'₫' + ${#numbers.formatInteger(order.totalAmount, 0)}"></td>
+          <td th:text="${order.paymentMethod.displayName}"></td>
+          <td>
+            <span class="payment-status" th:classappend="${order.paymentStatus.name() == 'PAID' ? 'payment-paid' : 'payment-unpaid'}" th:text="${order.paymentStatus.displayName}"></span>
+          </td>
+          <td>
+            <form th:action="@{/admin/orders/update-status/{id}(id=${order.id})}" method="post" class="status-form">
+              <select name="status" class="status-select">
+                <option th:each="status : ${statuses}" th:value="${status}" th:text="${status.displayName}" th:selected="${status == order.status}"></option>
+              </select>
+              <button type="submit" class="btn-update">Cập nhật</button>
+            </form>
+          </td>
+          <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+          <td>
+            <a th:href="@{/admin/orders}" class="btn-edit" style="text-decoration: none;">
+              <i class="fa-solid fa-eye"></i> Xem
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div th:if="${orders == null or orders.size() == 0}" class="empty-message">
+    <i class="fa-solid fa-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+    <p>Không có đơn hàng nào</p>
+  </div>
+</main-content>
+</body>
+</html>

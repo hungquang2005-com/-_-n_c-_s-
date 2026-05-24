@@ -1,0 +1,106 @@
+electronics-shop/
+├── pom.xml
+├── src/
+│   ├── main/
+│   │   ├── java/com/electronicsshop/
+│   │   │   ├── ElectronicsShopApplication.java
+│   │   │   ├── config/
+│   │   │   │   ├── SecurityConfig.java
+│   │   │   │   └── WebMvcConfig.java
+│   │   │   ├── model/
+│   │   │   │   ├── User.java
+│   │   │   │   ├── Product.java
+│   │   │   │   ├── Cart.java
+│   │   │   │   ├── CartItem.java
+│   │   │   │   ├── Order.java
+│   │   │   │   ├── OrderItem.java
+│   │   │   │   └── Payment.java
+│   │   │   ├── repository/
+│   │   │   │   ├── UserRepository.java
+│   │   │   │   ├── ProductRepository.java
+│   │   │   │   ├── CartRepository.java
+│   │   │   │   ├── CartItemRepository.java
+│   │   │   │   ├── OrderRepository.java
+│   │   │   │   ├── OrderItemRepository.java
+│   │   │   │   └── PaymentRepository.java
+│   │   │   ├── service/
+│   │   │   │   ├── CustomUserDetailsService.java
+│   │   │   │   ├── UserService.java
+│   │   │   │   ├── ProductService.java
+│   │   │   │   ├── CartService.java
+│   │   │   │   ├── OrderService.java
+│   │   │   │   ├── PaymentService.java
+│   │   │   │   └── DashboardService.java
+│   │   │   ├── exception/
+│   │   │   │   ├── ResourceNotFoundException.java
+│   │   │   │   └── GlobalExceptionHandler.java
+│   │   │   └── controller/
+│   │   │       ├── user/
+│   │   │       │   ├── UserAuthController.java
+│   │   │       │   ├── HomeController.java
+│   │   │       │   ├── ProductController.java
+│   │   │       │   ├── CartController.java
+│   │   │       │   ├── CheckoutController.java
+│   │   │       │   ├── OrderController.java
+│   │   │       │   └── PageController.java
+│   │   │       └── admin/
+│   │   │           ├── AdminAuthController.java
+│   │   │           ├── AdminController.java
+│   │   │           ├── AdminProductController.java
+│   │   │           └── AdminOrderController.java
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       ├── templates/
+│   │       │   ├── user/
+│   │       │   │   ├── layout.html
+│   │       │   │   ├── about.html
+│   │       │   │   ├── contact.html
+│   │       │   │   ├── auth/
+│   │       │   │   │   ├── login.html
+│   │       │   │   │   └── register.html
+│   │       │   │   ├── home/
+│   │       │   │   │   └── index.html
+│   │       │   │   ├── product/
+│   │       │   │   │   ├── list.html
+│   │       │   │   │   └── detail.html
+│   │       │   │   ├── cart/
+│   │       │   │   │   └── index.html
+│   │       │   │   ├── checkout/
+│   │       │   │   │   ├── info.html
+│   │       │   │   │   ├── payment.html
+│   │       │   │   │   ├── invoice.html
+│   │       │   │   │   └── success.html
+│   │       │   │   └── order/
+│   │       │   │       ├── history.html
+│   │       │   │       └── detail.html
+│   │       │   └── admin/
+│   │       │       ├── layout.html
+│   │       │       ├── dashboard.html
+│   │       │       ├── auth/
+│   │       │       │   └── login.html
+│   │       │       ├── product/
+│   │       │       │   ├── list.html
+│   │       │       │   ├── add.html
+│   │       │       │   └── edit.html
+│   │       │       └── order/
+│   │       │           └── list.html
+│   │       └── static/
+│   │           ├── css/
+│   │           │   ├── user/
+│   │           │   │   ├── style.css
+│   │           │   │   └── auth.css
+│   │           │   └── admin/
+│   │           │       ├── dashboard.css
+│   │           │       └── auth.css
+│   │           ├── js/
+│   │           │   ├── user/
+│   │           │   │   ├── main.js
+│   │           │   │   └── payment.js
+│   │           │   └── admin/
+│   │           │       └── dashboard.js
+│   │           └── images/
+│   │               ├── products/
+│   │               └── banner/
+│   └── test/
+│       └── java/com/electronicsshop/
+│           └── ElectronicsShopApplicationTests.java
