@@ -18,12 +18,16 @@ public class CartService {
 
     // Lấy hoặc tạo giỏ hàng cho user
     public Cart getOrCreateCart(String email) {
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+
         return cartRepository.findByUser(user)
                 .orElseGet(() -> {
+
                     Cart cart = new Cart();
                     cart.setUser(user);
+
                     return cartRepository.save(cart);
                 });
     }
@@ -31,20 +35,31 @@ public class CartService {
     // Thêm sản phẩm vào giỏ
     @Transactional
     public void addToCart(String email, Long productId, int quantity) {
+
         Cart cart = getOrCreateCart(email);
+
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
 
-        Optional<CartItem> existingItem = cartItemRepository.findByCartAndProduct(cart, product);
+        Optional<CartItem> existingItem =
+                cartItemRepository.findByCartAndProduct(cart, product);
+
         if (existingItem.isPresent()) {
+
             CartItem item = existingItem.get();
+
             item.setQuantity(item.getQuantity() + quantity);
+
             cartItemRepository.save(item);
+
         } else {
+
             CartItem item = new CartItem();
+
             item.setCart(cart);
             item.setProduct(product);
             item.setQuantity(quantity);
+
             cartItemRepository.save(item);
         }
     }
@@ -52,18 +67,32 @@ public class CartService {
     // Cập nhật số lượng
     @Transactional
     public void updateQuantity(String email, Long itemId, int quantity) {
+
         Cart cart = getOrCreateCart(email);
+
         CartItem item = cartItemRepository.findById(itemId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm trong giỏ"));
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy sản phẩm trong giỏ"));
 
         if (!item.getCart().getId().equals(cart.getId())) {
             throw new RuntimeException("Không có quyền thay đổi giỏ hàng này");
         }
 
         if (quantity <= 0) {
+
+            // Xóa khỏi list trước
+            cart.getItems().remove(item);
+
+            // Xóa database
             cartItemRepository.delete(item);
+
+            // Update cart
+            cartRepository.save(cart);
+
         } else {
+
             item.setQuantity(quantity);
+
             cartItemRepository.save(item);
         }
     }
@@ -71,30 +100,49 @@ public class CartService {
     // Xóa sản phẩm khỏi giỏ
     @Transactional
     public void removeItem(String email, Long itemId) {
+
         Cart cart = getOrCreateCart(email);
+
         CartItem item = cartItemRepository.findById(itemId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm trong giỏ"));
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy sản phẩm trong giỏ"));
 
         if (!item.getCart().getId().equals(cart.getId())) {
             throw new RuntimeException("Không có quyền xóa sản phẩm này");
         }
+
+        // Xóa khỏi list trong cart
+        cart.getItems().remove(item);
+
+        // Xóa trong database
         cartItemRepository.delete(item);
+
+        // Cập nhật lại cart
+        cartRepository.save(cart);
     }
 
     // Xóa toàn bộ giỏ hàng (sau khi đặt hàng)
     @Transactional
     public void clearCart(String email) {
+
         Cart cart = getOrCreateCart(email);
+
         cart.getItems().clear();
+
         cartRepository.save(cart);
     }
 
-    // Tổng số sản phẩm trong giỏ (để hiển thị trên navbar)
+    // Tổng số sản phẩm trong giỏ
     public int getCartItemCount(String email) {
+
         try {
+
             Cart cart = getOrCreateCart(email);
+
             return cart.getTotalQuantity();
+
         } catch (Exception e) {
+
             return 0;
         }
     }
