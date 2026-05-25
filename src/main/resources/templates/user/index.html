@@ -9,6 +9,70 @@
 <head>
   <style>
     /* ════════════════════════════════
+       HERO SLIDESHOW
+    ════════════════════════════════ */
+    .hs-slides {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+    }
+
+    /* mỗi slide stack lên nhau, fade in/out */
+    .hs-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1.4s cubic-bezier(.4,0,.2,1);
+    }
+    .hs-slide.active { opacity: 1; }
+
+    .hs-slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      /* Ken Burns — scale nhẹ khi active */
+      transform: scale(1.0);
+      transition: transform 9s ease;
+    }
+    .hs-slide.active img   { transform: scale(1.07); }
+    .hs-slide:not(.active) img { transform: scale(1.0); }
+
+    /* thanh progress xanh chạy dưới */
+    .hs-progress {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: rgba(255,255,255,.12);
+      z-index: 4;
+    }
+    .hs-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      border-radius: 0 2px 2px 0;
+      transition: width 0s linear; /* thời gian set bằng JS */
+    }
+
+    /* chấm điều hướng */
+    .hs-dots {
+      position: absolute;
+      bottom: 20px; left: 48px;
+      display: flex; gap: 7px; z-index: 3;
+    }
+    .hs-dot {
+      width: 7px; height: 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.35);
+      border: none; padding: 0; cursor: pointer;
+      transition: background .3s, width .35s cubic-bezier(.4,0,.2,1);
+    }
+    .hs-dot.active {
+      background: #fff;
+      width: 24px;
+    }
+
+    /* ════════════════════════════════
        TRUST BAR
     ════════════════════════════════ */
     .trust-bar {
@@ -435,8 +499,39 @@
 
   <!-- ══ HERO (giữ nguyên) ══ -->
   <section class="home-hero">
-    <div class="hero-showcase reveal-left">
-      <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1500&q=85" alt="Laptop và phụ kiện công nghệ"/>
+    <div class="hero-showcase reveal-left" id="heroShowcase">
+
+      <!-- ── Slideshow ảnh nền ── -->
+      <div class="hs-slides">
+        <!-- Slide 1: gaming setup màn hình lớn -->
+        <div class="hs-slide active">
+          <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1500&q=85" alt="Gaming setup"/>
+        </div>
+        <!-- Slide 2: workspace laptop tối giản, ánh sáng đẹp -->
+        <div class="hs-slide">
+          <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1500&q=85" alt="Laptop workspace"/>
+        </div>
+        <!-- Slide 3: PC tower RGB đẹp -->
+        <div class="hs-slide">
+          <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1500&q=85" alt="PC Gaming"/>
+        </div>
+        <!-- Slide 4: bàn phím cơ cận cảnh, tone tối -->
+        <div class="hs-slide">
+          <img src="https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=1500&q=85" alt="Mechanical keyboard"/>
+        </div>
+      </div>
+
+      <!-- thanh progress chạy ngang dưới cùng -->
+      <div class="hs-progress"><div class="hs-progress-bar" id="hsBar"></div></div>
+
+      <!-- chấm điều hướng -->
+      <div class="hs-dots" id="hsDots">
+        <button class="hs-dot active" aria-label="Slide 1"></button>
+        <button class="hs-dot" aria-label="Slide 2"></button>
+        <button class="hs-dot" aria-label="Slide 3"></button>
+        <button class="hs-dot" aria-label="Slide 4"></button>
+      </div>
+
       <div class="hero-overlay"></div>
       <div class="hero-copy">
         <span class="eyebrow">Electronics Store</span>
@@ -725,6 +820,75 @@
   </section>
 
 </main-content>
-<script></script>
+<script>
+(function () {
+
+  /* ── Hero slideshow ── */
+  var slides  = document.querySelectorAll('#heroShowcase .hs-slide');
+  var dots    = document.querySelectorAll('#hsDots .hs-dot');
+  var bar     = document.getElementById('hsBar');
+  if (!slides.length) return;
+
+  var DURATION = 5000; // ms mỗi slide
+  var cur      = 0;
+  var autoTimer, restartTimer;
+
+  function goTo(n) {
+    // tắt active cũ
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('active');
+    // chuyển index
+    cur = (n + slides.length) % slides.length;
+    // bật active mới
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('active');
+    // reset progress bar
+    if (bar) {
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      // force reflow rồi chạy animation
+      bar.getBoundingClientRect();
+      bar.style.transition = 'width ' + DURATION + 'ms linear';
+      bar.style.width = '100%';
+    }
+  }
+
+  function startAuto() {
+    clearInterval(autoTimer);
+    autoTimer = setInterval(function () { goTo(cur + 1); }, DURATION);
+  }
+
+  // click dot: nhảy ngay + reset timer
+  dots.forEach(function (d, i) {
+    d.addEventListener('click', function () {
+      clearInterval(autoTimer);
+      goTo(i);
+      startAuto();
+    });
+  });
+
+  // khởi chạy
+  goTo(0);
+  startAuto();
+
+  /* ── Scroll reveal ── */
+  var revEls = document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
+  if (!('IntersectionObserver' in window)) {
+    revEls.forEach(function (el) { el.classList.add('revealed'); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var d = e.target.style.getPropertyValue('--delay') || '0ms';
+      e.target.style.transitionDelay = d;
+      e.target.classList.add('revealed');
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -36px 0px' });
+  revEls.forEach(function (el) { io.observe(el); });
+
+})();
+</script>
 </body>
 </html>
