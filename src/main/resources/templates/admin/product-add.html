@@ -6,140 +6,16 @@
         pageScripts=~{::script},
         content=~{::main-content}
       )}">
-<head>
-  <style>
-    .form-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-
-    .form-header h1 {
-      font-size: 2rem;
-    }
-
-    .product-form {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(0, 212, 255, 0.1);
-      border-radius: 8px;
-      padding: 2rem;
-      max-width: 900px;
-    }
-
-    .form-section {
-      margin-bottom: 2rem;
-    }
-
-    .form-section-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid rgba(0, 212, 255, 0.1);
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .form-group label {
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: #ccc;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      padding: 0.75rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(0, 212, 255, 0.2);
-      border-radius: 4px;
-      color: #fff;
-      font-size: 0.95rem;
-      font-family: inherit;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: #00d4ff;
-      box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .checkbox-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .checkbox-group input[type="checkbox"] {
-      width: auto;
-      cursor: pointer;
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(0, 212, 255, 0.1);
-    }
-
-    .btn-submit {
-      background: linear-gradient(135deg, #00d4ff, #0099cc);
-      color: #000;
-      padding: 0.75rem 2rem;
-      border: none;
-      border-radius: 4px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .btn-submit:hover {
-      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-    }
-
-    .btn-cancel {
-      background: rgba(255, 255, 255, 0.1);
-      color: #ccc;
-      padding: 0.75rem 2rem;
-      border: 1px solid rgba(0, 212, 255, 0.2);
-      border-radius: 4px;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .btn-cancel:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-  </style>
-</head>
+<head><style></style></head>
 <body>
 <main-content>
   <div class="form-header">
     <h1><i class="fa-solid fa-plus"></i> Thêm sản phẩm mới</h1>
   </div>
 
-  <form class="product-form" method="post" th:action="@{/admin/products/add}" enctype="multipart/form-data">
-    <!-- Basic Info -->
+  <form class="product-form" method="post"
+        th:action="@{/admin/products/add}" enctype="multipart/form-data">
+
     <div class="form-section">
       <div class="form-section-title">Thông tin cơ bản</div>
       <div class="form-row">
@@ -155,7 +31,6 @@
           </select>
         </div>
       </div>
-
       <div class="form-row">
         <div class="form-group">
           <label for="brand">Thương hiệu</label>
@@ -168,22 +43,22 @@
       </div>
     </div>
 
-    <!-- Description -->
     <div class="form-section">
       <div class="form-section-title">Mô tả</div>
       <div class="form-group">
         <label for="description">Mô tả sản phẩm</label>
-        <textarea id="description" name="description" placeholder="Nhập mô tả chi tiết sản phẩm..."></textarea>
+        <textarea id="description" name="description"
+                  placeholder="Nhập mô tả chi tiết sản phẩm..."></textarea>
       </div>
-      <div class="form-group">
+      <div class="form-group" style="margin-top:1rem">
         <label for="specifications">Thông số kỹ thuật</label>
-        <textarea id="specifications" name="specifications" placeholder="VD: CPU: Intel Core i9&#10;RAM: 32GB&#10;SSD: 1TB"></textarea>
+        <textarea id="specifications" name="specifications"
+                  placeholder="VD: CPU: Intel Core i9&#10;RAM: 32GB&#10;SSD: 1TB"></textarea>
       </div>
     </div>
 
-    <!-- Pricing & Stock -->
     <div class="form-section">
-      <div class="form-section-title">Giá & Kho</div>
+      <div class="form-section-title">Giá &amp; Kho</div>
       <div class="form-row">
         <div class="form-group">
           <label for="price">Giá (VNĐ) *</label>
@@ -196,7 +71,6 @@
       </div>
     </div>
 
-    <!-- Media -->
     <div class="form-section">
       <div class="form-section-title">Hình ảnh</div>
       <div class="form-group">
@@ -205,16 +79,14 @@
       </div>
     </div>
 
-    <!-- Features -->
     <div class="form-section">
       <div class="form-section-title">Đặc điểm</div>
       <div class="checkbox-group">
         <input type="checkbox" id="isFeatured" name="isFeatured"/>
-        <label for="isFeatured" style="margin: 0;">Hiển thị trên trang chủ (nổi bật)</label>
+        <label for="isFeatured">Hiển thị trên trang chủ (nổi bật)</label>
       </div>
     </div>
 
-    <!-- Actions -->
     <div class="form-actions">
       <button type="submit" class="btn-submit">
         <i class="fa-solid fa-save"></i> Thêm sản phẩm

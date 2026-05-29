@@ -131,39 +131,39 @@ INSERT INTO products (name, description, specifications, origin, price, stock, c
 ('Laptop ASUS ROG Strix G16',
  'Laptop gaming ASUS ROG Strix G16 với RTX 4070, màn hình 165Hz, thiết kế mạnh mẽ.',
  'CPU: Intel Core i9-13980HX\nRAM: 16GB DDR5\nSSD: 1TB NVMe\nGPU: RTX 4070 8GB\nMàn hình: 16" FHD 165Hz\nPin: 90Wh',
- 'Đài Loan', 45990000, 20, 'Laptop', 'ASUS', 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=900&q=85', TRUE),
+ 'Đài Loan', 45990000, 20, 'Laptop', 'ASUS', 'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSt_38U7qYThMCWfJsflIf1klGaeQ--3uSGGnFZumsjRMqXEqeVwNY_IhIUfoGNVzLxGN4mO4jPYVLc9gRcADKql7FIW0jiy_tWisM-wScKWdsGqNdh4OKcVrQr6pHGRz9WHJvRF9Z1kyA&usqp=CAc', TRUE),
 
 ('MacBook Air M3 13 inch',
  'MacBook Air M3 mỏng nhẹ, hiệu năng tốt cho học tập, văn phòng và sáng tạo nội dung.',
  'Chip: Apple M3\nRAM: 8GB\nSSD: 256GB\nMàn hình: 13.6" Liquid Retina\nPin: 18 giờ\nKhối lượng: 1.24kg',
- 'Mỹ', 28990000, 25, 'Laptop', 'Apple', 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=900&q=85', TRUE),
+ 'Mỹ', 28990000, 25, 'Laptop', 'Apple', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNFGi6lHqRsVTezA37DbCcoOVH3IltWBWRUw&s', TRUE),
 
 ('PC Gaming RTX 4070 Super',
  'Bộ PC gaming hiệu năng cao, phù hợp chơi game AAA, livestream và render video.',
  'CPU: Intel Core i7\nRAM: 32GB DDR5\nSSD: 1TB NVMe\nGPU: RTX 4070 Super\nPSU: 750W Gold\nCase: RGB Airflow',
- 'Việt Nam', 38990000, 12, 'PC Gaming', 'Hung Build', 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=900&q=85', TRUE),
+ 'Việt Nam', 38990000, 12, 'PC Gaming', 'Hung Build', 'https://pcmarket.vn/media/product/10883_dsc00105_1.jpg', TRUE),
 
 ('Màn hình LG UltraGear 27 inch 165Hz',
  'Màn hình gaming 27 inch tần số quét 165Hz, màu sắc đẹp, phản hồi nhanh.',
  'Kích thước: 27 inch\nĐộ phân giải: QHD\nTần số quét: 165Hz\nTấm nền: IPS\nThời gian phản hồi: 1ms',
- 'Hàn Quốc', 6990000, 35, 'Màn hình', 'LG', 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=900&q=85', TRUE),
+ 'Hàn Quốc', 6990000, 35, 'Màn hình', 'LG', 'https://product.hstatic.net/200000722513/product/24gq50f_-_165hz_2db992d3606549d8ba0ce4700999f4a3_master.jpg', TRUE),
 
 ('Bàn phím cơ Keychron K8 Pro',
  'Bàn phím cơ không dây layout TKL, switch êm, hỗ trợ macOS và Windows.',
  'Layout: TKL\nSwitch: Brown\nKết nối: Bluetooth/USB-C\nKeycap: PBT\nĐèn nền: RGB',
- 'Trung Quốc', 2490000, 80, 'Bàn phím', 'Keychron', 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=900&q=85', TRUE),
+ 'Trung Quốc', 2490000, 80, 'Bàn phím', 'Keychron', 'https://bizweb.dktcdn.net/thumb/1024x1024/100/329/122/products/ban-phim-co-tkl-khong-day-keychron-k8-pro-white-led-hotswap-gateron-g-pro-switch-4-05041ac1-d1b3-4e21-9021-7a9a419a6530.jpg?v=1692600770003', TRUE),
 
 ('Chuột Logitech MX Master 3S',
  'Chuột không dây cao cấp Logitech MX Master 3S, cảm biến 8000 DPI, kết nối đa thiết bị.',
  'DPI: 200-8000\nPin: 70 ngày\nKết nối: Bluetooth + USB Receiver\nSố nút: 7\nKhối lượng: 141g',
- 'Thụy Sĩ', 2190000, 200, 'Chuột', 'Logitech', 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=900&q=85', FALSE),
+ 'Thụy Sĩ', 2190000, 200, 'Chuột', 'Logitech', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFCDVGdbFI9W8Xn2-zxLckRqDbIrzAmISrmw&s', FALSE),
 
 ('Tai nghe Sony WH-1000XM5',
  'Tai nghe chống ồn cao cấp từ Sony, âm thanh Hi-Res, pin 30 giờ.',
  'Driver: 30mm\nChống ồn: Active Noise Cancelling\nPin: 30 giờ\nKết nối: Bluetooth 5.2\nTrọng lượng: 250g',
- 'Nhật Bản', 8490000, 100, 'Tai nghe', 'Sony', 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=85', FALSE),
+ 'Nhật Bản', 8490000, 100, 'Tai nghe', 'Sony', 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSf0LWts0UFj4LUGqJ6h4e9UbvjGzxYAViitZJ8HpzxQc7iDBkynHgU7kSNP7Qp9EB4N4ib-iucn3y05inlXADKuICXXxdAVGtw2Zt4WnB43FDrSO6rC-XdbXkNGtOBCNMp_FjJ55srqA&usqp=CAc', FALSE),
 
 ('iPhone 15 Pro Max 256GB',
  'iPhone 15 Pro Max với chip A17 Pro mạnh mẽ, camera 48MP, màn hình Super Retina XDR 6.7 inch.',
  'Chip: A17 Pro\nRAM: 8GB\nBộ nhớ: 256GB\nMàn hình: 6.7" Super Retina XDR\nCamera: 48MP + 12MP + 12MP\nPin: 4422mAh',
- 'Mỹ', 34990000, 50, 'Điện thoại', 'Apple', 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=900&q=85', FALSE);
+ 'Mỹ', 34990000, 50, 'Điện thoại', 'Apple', 'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcR_v68P5Zo5GYqVc0Knkmof-YkiNpN9FUXsd9Ne5VNwWVFHtlx9CDVltuKOs3n7uuynJzqPfbheTcA6nVsA9vwl7kpxLPqsf56Vp21vuqN2DFBeNad6yGF96YyQAWulR9k04bDLNKk&usqp=CAc', FALSE);

@@ -1,0 +1,96 @@
+/* ═══════════════════════════════════════════════════════════
+   HUNGGAMING ADMIN — auth.css  (login page)
+═══════════════════════════════════════════════════════════ */
+.admin-login-container{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:2rem;position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse at 18% 55%,rgba(45,74,45,.45) 0%,transparent 58%),
+    radial-gradient(ellipse at 82% 18%,rgba(163,230,53,.07) 0%,transparent 50%),
+    #0d1a0d;
+}
+.admin-login-container::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(163,230,53,.038) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(163,230,53,.038) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+.admin-login-form{
+  position:relative;z-index:1;
+  background:#111d11;border:1px solid rgba(163,230,53,.13);
+  border-radius:12px;padding:3rem 2.5rem;width:100%;max-width:420px;
+  box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 80px rgba(163,230,53,.04);
+  animation:fadeUp .45s ease both;
+}
+.admin-login-form::before{
+  content:'';position:absolute;top:0;left:12%;right:12%;
+  height:2px;background:linear-gradient(90deg,transparent,#a3e635,transparent);
+  border-radius:999px;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+
+.admin-login-header{text-align:center;margin-bottom:2.4rem}
+.admin-login-header h1{
+  font-family:'Orbitron',monospace;font-size:2.6rem;
+  color:#a3e635;margin-bottom:.4rem;line-height:1;
+  animation:glow 3s ease-in-out infinite;
+}
+@keyframes glow{0%,100%{text-shadow:0 0 14px rgba(163,230,53,.4)}50%{text-shadow:0 0 28px rgba(163,230,53,.7)}}
+.admin-login-header h2{
+  font-family:'Orbitron',monospace;font-size:.95rem;font-weight:500;
+  color:#8aaa8a;letter-spacing:.14em;text-transform:uppercase;
+}
+
+.admin-form-group{margin-bottom:1.45rem}
+.admin-form-group label{
+  display:block;font-family:'Inter',sans-serif;font-size:.74rem;
+  font-weight:700;color:#4d6b4d;text-transform:uppercase;
+  letter-spacing:.1em;margin-bottom:.45rem;
+}
+.admin-form-group input{
+  width:100%;padding:.78rem 1rem;
+  background:#162416;border:1px solid rgba(163,230,53,.18);
+  border-radius:4px;color:#eef2ee;
+  font-family:'Inter',sans-serif;font-size:.92rem;
+  transition:all .22s ease;
+}
+.admin-form-group input::placeholder{color:#4d6b4d;font-size:.86rem}
+.admin-form-group input:focus{
+  outline:none;border-color:#a3e635;background:rgba(163,230,53,.04);
+  box-shadow:0 0 0 3px rgba(163,230,53,.1);
+}
+.admin-password-field{position:relative}
+.admin-password-field input{padding-right:48px}
+.admin-password-toggle{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  width:34px;height:34px;display:grid;place-items:center;
+  color:#4d6b4d;background:transparent;border:none;
+  border-radius:50%;cursor:pointer;transition:all .22s ease;font-size:.88rem;
+}
+.admin-password-toggle:hover{color:#a3e635;background:rgba(163,230,53,.12)}
+
+.admin-btn-login{
+  width:100%;padding:.88rem;
+  background:linear-gradient(135deg,#a3e635,#6fb800);
+  border:none;border-radius:4px;color:#0d1a0d;
+  font-family:'Inter',sans-serif;font-weight:800;font-size:.92rem;
+  letter-spacing:.06em;text-transform:uppercase;cursor:pointer;
+  margin-top:1rem;display:flex;align-items:center;justify-content:center;
+  gap:.55rem;transition:all .22s ease;position:relative;overflow:hidden;
+}
+.admin-btn-login::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.22) 50%,transparent 65%);
+  transform:translateX(-100%);transition:transform .4s ease;
+}
+.admin-btn-login:hover::after{transform:translateX(100%)}
+.admin-btn-login:hover{box-shadow:0 0 26px rgba(163,230,53,.3),0 4px 18px rgba(0,0,0,.3);transform:translateY(-2px)}
+.admin-btn-login:active{transform:translateY(0)}
+
+.admin-error-msg{
+  padding:.82rem 1rem;border-radius:4px;margin-bottom:1.2rem;
+  text-align:center;font-family:'Inter',sans-serif;font-size:.86rem;
+  background:rgba(240,80,80,.12);border:1px solid rgba(240,80,80,.28);
+  color:#f05050;
+}

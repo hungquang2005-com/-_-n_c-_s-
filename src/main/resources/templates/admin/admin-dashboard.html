@@ -6,148 +6,75 @@
         pageScripts=~{::script},
         content=~{::main-content}
       )}">
-<head>
-  <style>
-    .dashboard-header {
-      margin-bottom: 2rem;
-    }
-
-    .dashboard-header h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(0, 212, 255, 0.1);
-      border-radius: 8px;
-      padding: 1.5rem;
-      transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-      border-color: rgba(0, 212, 255, 0.3);
-      box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
-    }
-
-    .stat-label {
-      color: #999;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #00d4ff;
-    }
-
-    .dashboard-section {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(0, 212, 255, 0.1);
-      border-radius: 8px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .section-title {
-      font-size: 1.3rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .chart-placeholder {
-      height: 300px;
-      background: rgba(0, 212, 255, 0.05);
-      border: 1px dashed rgba(0, 212, 255, 0.2);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #666;
-    }
-  </style>
-</head>
+<head><style></style></head>
 <body>
 <main-content>
   <div class="dashboard-header">
     <h1><i class="fa-solid fa-chart-line"></i> Dashboard</h1>
   </div>
 
-  <!-- Statistics -->
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-label">Total Revenue</div>
-      <div class="stat-value" th:text="${totalRevenue} != null ? '₫' + ${#numbers.formatInteger(totalRevenue, 0)} : '₫0'"></div>
+      <div class="stat-label">Doanh thu</div>
+      <div class="stat-value"
+           th:text="${totalRevenue} != null ? '₫' + ${#numbers.formatInteger(totalRevenue,0,'COMMA')} : '₫0'"></div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Total Orders</div>
+      <div class="stat-label">Tổng đơn hàng</div>
       <div class="stat-value" th:text="${totalOrders}"></div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Pending Orders</div>
+      <div class="stat-label">Chờ xử lý</div>
       <div class="stat-value" th:text="${pendingOrders}"></div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Total Products</div>
+      <div class="stat-label">Sản phẩm</div>
       <div class="stat-value" th:text="${totalProducts}"></div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">Total Users</div>
+      <div class="stat-label">Người dùng</div>
       <div class="stat-value" th:text="${totalUsers}"></div>
     </div>
   </div>
 
-  <!-- Charts -->
   <div class="dashboard-section">
     <div class="section-title">
-      <i class="fa-solid fa-chart-bar"></i> Revenue Chart
+      <i class="fa-solid fa-chart-bar"></i> Biểu đồ doanh thu
     </div>
     <div class="chart-placeholder">
       <p>Chart visualization would render here</p>
     </div>
   </div>
 
-  <!-- Recent Orders -->
   <div class="dashboard-section">
     <div class="section-title">
-      <i class="fa-solid fa-receipt"></i> Recent Orders
+      <i class="fa-solid fa-receipt"></i> Đơn hàng gần đây
     </div>
     <div th:if="${recentOrders != null and recentOrders.size() > 0}">
       <table class="admin-table">
         <thead>
           <tr>
-            <th>Order ID</th>
-            <th>Customer</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Date</th>
+            <th>Mã đơn</th>
+            <th>Khách hàng</th>
+            <th>Số tiền</th>
+            <th>Trạng thái</th>
+            <th>Ngày đặt</th>
           </tr>
         </thead>
         <tbody>
           <tr th:each="order : ${recentOrders}">
             <td th:text="'#' + ${order.id}"></td>
             <td th:text="${order.fullName}"></td>
-            <td th:text="'₫' + ${#numbers.formatInteger(order.totalAmount, 0)}"></td>
+            <td class="order-amount" th:text="'₫' + ${#numbers.formatInteger(order.totalAmount,0,'COMMA')}"></td>
             <td th:text="${order.status.displayName}"></td>
-            <td th:text="${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${#temporals.format(order.createdAt,'dd/MM/yyyy HH:mm')}"></td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div th:if="${recentOrders == null or recentOrders.size() == 0}" class="chart-placeholder">
-      <p>No orders yet</p>
+    <div th:if="${recentOrders == null or recentOrders.size() == 0}" class="empty-message">
+      <i class="fa-solid fa-inbox"></i>
+      <p>Chưa có đơn hàng nào</p>
     </div>
   </div>
 </main-content>

@@ -1,9 +1,9 @@
-electronics-shop/
+hung_gamingshop/
 ├── pom.xml
 ├── src/
 │   ├── main/
-│   │   ├── java/com/electronicsshop/
-│   │   │   ├── ElectronicsShopApplication.java
+│   │   ├── java/com/hung_gamingshop/
+│   │   │   ├── HungGamingshopApplication.java
 │   │   │   ├── config/
 │   │   │   │   ├── SecurityConfig.java
 │   │   │   │   └── WebMvcConfig.java
@@ -50,58 +50,51 @@ electronics-shop/
 │   │   │           └── AdminOrderController.java
 │   │   └── resources/
 │   │       ├── application.properties
-│   │       ├── templates/
-│   │       │   ├── user/
-│   │       │   │   ├── layout.html
-│   │       │   │   ├── about.html
-│   │       │   │   ├── contact.html
-│   │       │   │   ├── auth/
-│   │       │   │   │   ├── login.html
-│   │       │   │   │   └── register.html
-│   │       │   │   ├── home/
-│   │       │   │   │   └── index.html
-│   │       │   │   ├── product/
-│   │       │   │   │   ├── list.html
-│   │       │   │   │   └── detail.html
-│   │       │   │   ├── cart/
-│   │       │   │   │   └── index.html
-│   │       │   │   ├── checkout/
-│   │       │   │   │   ├── info.html
-│   │       │   │   │   ├── payment.html
-│   │       │   │   │   ├── invoice.html
-│   │       │   │   │   └── success.html
-│   │       │   │   └── order/
-│   │       │   │       ├── history.html
-│   │       │   │       └── detail.html
-│   │       │   └── admin/
-│   │       │       ├── layout.html
-│   │       │       ├── dashboard.html
-│   │       │       ├── auth/
-│   │       │       │   └── login.html
-│   │       │       ├── product/
-│   │       │       │   ├── list.html
-│   │       │       │   ├── add.html
-│   │       │       │   └── edit.html
-│   │       │       └── order/
-│   │       │           └── list.html
-│   │       └── static/
-│   │           ├── css/
-│   │           │   ├── user/
-│   │           │   │   ├── style.css
-│   │           │   │   └── auth.css
-│   │           │   └── admin/
-│   │           │       ├── dashboard.css
-│   │           │       └── auth.css
-│   │           ├── js/
-│   │           │   ├── user/
-│   │           │   │   ├── main.js
-│   │           │   │   └── payment.js
-│   │           │   └── admin/
-│   │           │       └── dashboard.js
-│   │           └── images/
-│   │               ├── products/
-│   │               └── banner/
+│   │       ├── static/
+│   │       │   ├── css/
+│   │       │   │   ├── admin/
+│   │       │   │   │   ├── auth.css
+│   │       │   │   │   └── dashboard.css
+│   │       │   │   └── user/
+│   │       │   │       ├── animations.css
+│   │       │   │       ├── auth.css
+│   │       │   │       └── style.css
+│   │       │   ├── js/
+│   │       │   │   ├── admin/
+│   │       │   │   │   └── dashboard.js
+│   │       │   │   └── user/
+│   │       │   │       └── main.js
+│   │       │   └── images/
+│   │       │       ├── products/
+│   │       │       └── banner/
+│   │       └── templates/
+│   │           ├── admin/
+│   │           │   ├── admin-dashboard.html
+│   │           │   ├── layout.html
+│   │           │   ├── login.html
+│   │           │   ├── order-list.html
+│   │           │   ├── product-add.html
+│   │           │   ├── product-edit.html
+│   │           │   └── product-list.html
+│   │           ├── error/
+│   │           │   ├── 403.html
+│   │           │   └── 500.html
+│   │           └── user/
+│   │               ├── about.html
+│   │               ├── contact.html
+│   │               ├── detail.html
+│   │               ├── history.html
+│   │               ├── index.html
+│   │               ├── info.html
+│   │               ├── invoice.html
+│   │               ├── layout.html
+│   │               ├── list.html
+│   │               ├── login.html
+│   │               ├── order-history.html
+│   │               ├── payment.html
+│   │               ├── register.html
+│   │               └── success.html
 │   └── test/
-│       └── java/com/electronicsshop/
-│           └── ElectronicsShopApplicationTests.java
+│       └── java/com/hung_gamingshop/
+│           └── HungGamingshopApplicationTests.java
 cập nhật giao diện và sửa lỗi xóa đơn hàng.
