@@ -37,12 +37,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Public routes
                 .requestMatchers(
-                    "/", "/home",
-                    "/products", "/products/**",
-                    "/about", "/contact",
-                    "/auth/login", "/auth/register",
-                    "/admin/auth/login",
-                    "/css/**", "/js/**", "/images/**"
+            "/home",
+            "/products", "/products/**",
+            "/about", "/contact",
+            "/auth/login", "/auth/register",
+            "/admin/auth/login",
+            "/css/**", "/js/**", "/images/**"
                 ).permitAll()
                 // Admin routes - chỉ ADMIN
                 .requestMatchers("/admin/**").hasRole("ADMIN")
