@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="html(pageTitle,pageStyles,pageScripts,content)">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -66,9 +67,12 @@
     </div>
     <div class="admin-nav-right">
       <span class="admin-user-name" sec:authentication="name"></span>
-      <a th:href="@{/auth/logout}" class="admin-nav-link logout">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất
-      </a>
+      <form th:action="@{/admin/auth/logout}" method="post" style="margin:0">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit" class="admin-nav-link logout" style="background:none;border:none;cursor:pointer;padding:0;font:inherit">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất
+        </button>
+      </form>
     </div>
   </div>
 </nav>
@@ -92,6 +96,8 @@
 
 <!-- Page Scripts -->
 <script th:src="@{/js/admin/dashboard.js}"></script>
-<th:block th:replace="${pageScripts}"></th:block>
+<th:block th:if="${pageStyles != null}"
+          th:replace="${pageStyles}">
+</th:block>
 </body>
 </html>

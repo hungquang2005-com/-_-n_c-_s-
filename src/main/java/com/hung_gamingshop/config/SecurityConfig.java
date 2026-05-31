@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,23 +32,65 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // ========================================================
+    // FILTER CHAIN 1: ADMIN  (ưu tiên cao hơn - @Order(1))
+    // Chỉ xử lý các request bắt đầu bằng /admin/**
+    // ========================================================
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Order(1)
+    public SecurityFilterChain adminFilterChain(HttpSecurity http) throws Exception {
+        http
+            // Chain này chỉ áp dụng cho /admin/**
+            .securityMatcher("/admin/**")
+            .authorizeHttpRequests(auth -> auth
+                // Cho phép truy cập trang login admin
+                .requestMatchers("/admin/auth/login").permitAll()
+                // Tất cả /admin/** còn lại phải có ROLE_ADMIN
+                .anyRequest().hasRole("ADMIN")
+            )
+            // Form login riêng cho admin
+            .formLogin(form -> form
+                .loginPage("/admin/auth/login")
+                .loginProcessingUrl("/admin/auth/login")
+                .usernameParameter("loginId")
+                .passwordParameter("password")
+                .successHandler(adminLoginSuccessHandler())
+                // Thất bại → quay lại trang login admin
+                .failureUrl("/admin/auth/login?error=true")
+                .permitAll()
+            )
+            // Logout riêng cho admin → quay về login admin
+            .logout(logout -> logout
+                .logoutRequestMatcher(new AntPathRequestMatcher("/admin/auth/logout"))
+                .logoutSuccessUrl("/admin/auth/login?logout=true")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .permitAll()
+            )
+            // Nếu user thường cố vào /admin → redirect về login admin (không phải 403)
+            .exceptionHandling(ex -> ex
+                .accessDeniedHandler((request, response, accessDeniedException) ->
+                    response.sendRedirect("/admin/auth/login"))
+                .authenticationEntryPoint((request, response, authException) ->
+                    response.sendRedirect("/admin/auth/login"))
+            );
+
+        return http.build();
+    }
+
+    // ========================================================
+    // FILTER CHAIN 2: USER  (@Order(2) - xử lý phần còn lại)
+    // ========================================================
+    @Bean
+    @Order(2)
+    public SecurityFilterChain userFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // Public routes
-                .requestMatchers(
-            "/home",
-            "/products", "/products/**",
-            "/about", "/contact",
-            "/auth/login", "/auth/register",
-            "/admin/auth/login",
-            "/css/**", "/js/**", "/images/**"
-                ).permitAll()
-                // Admin routes - chỉ ADMIN
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                // Các route còn lại phải đăng nhập
-                .requestMatchers("/cart/**", "/checkout/**", "/orders/**").authenticated()
+                // Static resources: public
+                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                // Trang login / register: public
+                .requestMatchers("/auth/login", "/auth/register").permitAll()
+                // Các trang khác PHẢI đăng nhập (bao gồm cả "/", "/home", "/products/...")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -55,8 +98,8 @@ public class SecurityConfig {
                 .loginProcessingUrl("/auth/login")
                 .usernameParameter("loginId")
                 .passwordParameter("password")
-                // ADMIN → /admin/dashboard, USER → /
-                .successHandler(loginSuccessHandler())
+                // Sau đăng nhập thành công → vào trang chủ user
+                .defaultSuccessUrl("/", true)
                 .failureUrl("/auth/login?error=true")
                 .permitAll()
             )
@@ -68,14 +111,17 @@ public class SecurityConfig {
                 .permitAll()
             )
             .exceptionHandling(ex -> ex
-                .accessDeniedPage("/access-denied")
+                // Chưa đăng nhập → về trang login user
+                .authenticationEntryPoint((request, response, authException) ->
+                    response.sendRedirect("/auth/login"))
             );
 
         return http.build();
     }
 
+    // Success handler cho admin: luôn vào /admin/dashboard
     @Bean
-    public AuthenticationSuccessHandler loginSuccessHandler() {
+    public AuthenticationSuccessHandler adminLoginSuccessHandler() {
         return new AuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request,
@@ -83,7 +129,12 @@ public class SecurityConfig {
                                                 Authentication authentication) throws IOException {
                 boolean isAdmin = authentication.getAuthorities().stream()
                         .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-                response.sendRedirect(isAdmin ? "/admin/dashboard" : "/");
+                if (isAdmin) {
+                    response.sendRedirect("/admin/dashboard");
+                } else {
+                    // Không phải admin → đá về login admin với lỗi
+                    response.sendRedirect("/admin/auth/login?error=true");
+                }
             }
         };
     }

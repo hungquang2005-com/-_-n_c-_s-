@@ -98,3 +98,7 @@ hung_gamingshop/
 │       └── java/com/hung_gamingshop/
 │           └── HungGamingshopApplicationTests.java
 cập nhật giao diện và sửa lỗi xóa đơn hàng.
+đã xong admin và user
+cần làm:
+1:cải thiện giao diện admin và thêm biểu đồ và phần thông báo đến nó
+2:có thể làm chatbot

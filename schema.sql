@@ -131,12 +131,12 @@ INSERT INTO products (name, description, specifications, origin, price, stock, c
 ('Laptop ASUS ROG Strix G16',
  'Laptop gaming ASUS ROG Strix G16 với RTX 4070, màn hình 165Hz, thiết kế mạnh mẽ.',
  'CPU: Intel Core i9-13980HX\nRAM: 16GB DDR5\nSSD: 1TB NVMe\nGPU: RTX 4070 8GB\nMàn hình: 16" FHD 165Hz\nPin: 90Wh',
- 'Đài Loan', 45990000, 20, 'Laptop', 'ASUS', 'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcSt_38U7qYThMCWfJsflIf1klGaeQ--3uSGGnFZumsjRMqXEqeVwNY_IhIUfoGNVzLxGN4mO4jPYVLc9gRcADKql7FIW0jiy_tWisM-wScKWdsGqNdh4OKcVrQr6pHGRz9WHJvRF9Z1kyA&usqp=CAc', TRUE),
+ 'Đài Loan', 45990000, 20, 'Laptop', 'ASUS', 'https://product.hstatic.net/200000837185/product/laptopgamingasusrogstrixg16g614ju-n4132w_344e3c472ce540a1b1fd1a771f2a94d0_master.png', TRUE),
 
 ('MacBook Air M3 13 inch',
  'MacBook Air M3 mỏng nhẹ, hiệu năng tốt cho học tập, văn phòng và sáng tạo nội dung.',
  'Chip: Apple M3\nRAM: 8GB\nSSD: 256GB\nMàn hình: 13.6" Liquid Retina\nPin: 18 giờ\nKhối lượng: 1.24kg',
- 'Mỹ', 28990000, 25, 'Laptop', 'Apple', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNFGi6lHqRsVTezA37DbCcoOVH3IltWBWRUw&s', TRUE),
+ 'Mỹ', 28990000, 25, 'Laptop', 'Apple', 'https://maccenter.vn/App_images/MacBookAir-13-M3-Midnight-A.jpg', TRUE),
 
 ('PC Gaming RTX 4070 Super',
  'Bộ PC gaming hiệu năng cao, phù hợp chơi game AAA, livestream và render video.',
@@ -156,14 +156,14 @@ INSERT INTO products (name, description, specifications, origin, price, stock, c
 ('Chuột Logitech MX Master 3S',
  'Chuột không dây cao cấp Logitech MX Master 3S, cảm biến 8000 DPI, kết nối đa thiết bị.',
  'DPI: 200-8000\nPin: 70 ngày\nKết nối: Bluetooth + USB Receiver\nSố nút: 7\nKhối lượng: 141g',
- 'Thụy Sĩ', 2190000, 200, 'Chuột', 'Logitech', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFCDVGdbFI9W8Xn2-zxLckRqDbIrzAmISrmw&s', FALSE),
+ 'Thụy Sĩ', 2190000, 200, 'Chuột', 'Logitech', 'https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/c/h/chuot-choi-game-co-day-logitech-g502-hero.png', TRUE),
 
 ('Tai nghe Sony WH-1000XM5',
  'Tai nghe chống ồn cao cấp từ Sony, âm thanh Hi-Res, pin 30 giờ.',
  'Driver: 30mm\nChống ồn: Active Noise Cancelling\nPin: 30 giờ\nKết nối: Bluetooth 5.2\nTrọng lượng: 250g',
- 'Nhật Bản', 8490000, 100, 'Tai nghe', 'Sony', 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSf0LWts0UFj4LUGqJ6h4e9UbvjGzxYAViitZJ8HpzxQc7iDBkynHgU7kSNP7Qp9EB4N4ib-iucn3y05inlXADKuICXXxdAVGtw2Zt4WnB43FDrSO6rC-XdbXkNGtOBCNMp_FjJ55srqA&usqp=CAc', FALSE),
+ 'Nhật Bản', 8490000, 100, 'Tai nghe', 'Sony', 'https://bizweb.dktcdn.net/100/340/129/products/wh-ch520-hong-pink-cuongphanvn.jpg?v=1745118456730', TRUE),
 
 ('iPhone 15 Pro Max 256GB',
  'iPhone 15 Pro Max với chip A17 Pro mạnh mẽ, camera 48MP, màn hình Super Retina XDR 6.7 inch.',
  'Chip: A17 Pro\nRAM: 8GB\nBộ nhớ: 256GB\nMàn hình: 6.7" Super Retina XDR\nCamera: 48MP + 12MP + 12MP\nPin: 4422mAh',
- 'Mỹ', 34990000, 50, 'Điện thoại', 'Apple', 'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcR_v68P5Zo5GYqVc0Knkmof-YkiNpN9FUXsd9Ne5VNwWVFHtlx9CDVltuKOs3n7uuynJzqPfbheTcA6nVsA9vwl7kpxLPqsf56Vp21vuqN2DFBeNad6yGF96YyQAWulR9k04bDLNKk&usqp=CAc', FALSE);
+ 'Mỹ', 34990000, 50, 'Điện thoại', 'Apple', 'https://cdn.tgdd.vn/Products/Images/42/305658/iphone-15-pro-max-blue-1-1-750x500.jpg', TRUE);

@@ -1,144 +1,226 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{admin/layout :: html(
-        pageTitle='Dang nhap Admin',
+        pageTitle='Đăng nhập Admin',
         pageStyles=~{::style},
         pageScripts=~{::script},
         content=~{::main-content}
       )}">
 <head>
   <style>
-    .admin-login-container {
+    /* ── Reset layout để full-page căn giữa ── */
+    .admin-login-page {
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #1a1f2e, #0d1421);
-      padding: 2rem;
+      background: #f5f4ef;
+      padding: 2rem 1rem;
     }
-    .admin-login-form {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(0, 212, 255, 0.2);
-      border-radius: 8px;
-      padding: 3rem;
-      width: 100%;
-      max-width: 400px;
-      backdrop-filter: blur(10px);
+
+    /* ── Card ── */
+    .admin-login-card {
+      width: min(100%, 420px);
+      background: #fff;
+      border: 1px solid #e4e2db;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(0,0,0,.07), 0 1px 3px rgba(0,0,0,.04);
+      padding: 36px 32px 32px;
     }
+
+    /* ── Header ── */
     .admin-login-header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 28px;
     }
-    .admin-login-header h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      color: #00d4ff;
+    .admin-login-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 79, 63, .1);
+      color: #0f4f3f;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 14px;
     }
-    .admin-form-group {
-      margin-bottom: 1.5rem;
+    .admin-login-badge i { font-size: 10px; }
+    .admin-login-header h2 {
+      margin: 0 0 6px;
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      color: #111;
     }
-    .admin-form-group label {
+    .admin-login-header p {
+      margin: 0;
+      color: #7a7870;
+      font-size: 14px;
+    }
+
+    /* ── Form groups ── */
+    .al-form-group { margin-bottom: 16px; }
+    .al-form-group label {
       display: block;
-      margin-bottom: 0.5rem;
-      color: #ccc;
-      font-size: 0.9rem;
+      margin-bottom: 7px;
+      color: #0f4f3f;
+      font-weight: 800;
+      font-size: 13px;
     }
-    .admin-form-group input {
+    .al-form-group input {
       width: 100%;
-      padding: 0.75rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(0, 212, 255, 0.3);
-      border-radius: 4px;
-      color: #fff;
-      font-size: 0.95rem;
+      min-height: 46px;
+      padding: 0 13px;
+      border: 1px solid #e4e2db;
+      border-radius: 8px;
+      outline: 0;
+      background: #fbfaf6;
+      color: #111;
+      font-size: 15px;
+      transition: border-color .15s, box-shadow .15s;
+      box-sizing: border-box;
     }
-    .admin-form-group input:focus {
-      outline: none;
-      border-color: #00d4ff;
-      box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    .al-form-group input:focus {
+      border-color: rgba(15, 79, 63, .36);
+      box-shadow: 0 0 0 4px rgba(15, 79, 63, .08);
     }
-    .admin-password-field {
-      position: relative;
-    }
-    .admin-password-field input {
-      padding-right: 44px;
-    }
-    .admin-password-toggle {
+
+    /* ── Password toggle ── */
+    .al-password-field { position: relative; }
+    .al-password-field input { padding-right: 48px; }
+    .al-password-toggle {
       position: absolute;
-      right: 8px;
+      right: 10px;
       top: 50%;
       width: 34px;
       height: 34px;
       display: grid;
       place-items: center;
-      color: #9db7c8;
+      color: #7a7870;
       border-radius: 50%;
-      transform: translateY(-50%);
-      transition: all 0.2s ease;
-    }
-    .admin-password-toggle:hover {
-      color: #00d4ff;
-      background: rgba(0, 212, 255, 0.12);
-    }
-    .admin-btn-login {
-      width: 100%;
-      padding: 0.75rem;
-      background: linear-gradient(135deg, #00d4ff, #0099cc);
       border: none;
-      border-radius: 4px;
-      color: #000;
-      font-weight: 600;
+      background: none;
       cursor: pointer;
-      margin-top: 1rem;
-      transition: all 0.3s ease;
+      transform: translateY(-50%);
+      transition: color .2s ease, background .2s ease;
     }
-    .admin-btn-login:hover {
-      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-      transform: translateY(-2px);
+    .al-password-toggle:hover {
+      color: #0f4f3f;
+      background: rgba(15, 79, 63, .08);
     }
-    .admin-error-msg {
-      background: rgba(255, 50, 50, 0.1);
-      border: 1px solid rgba(255, 50, 50, 0.3);
-      color: #ff6b6b;
-      padding: 1rem;
-      border-radius: 4px;
-      margin-bottom: 1rem;
+
+    /* ── Messages ── */
+    .al-message {
+      padding: 11px 14px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .al-message.error {
+      color: #b83232;
+      background: rgba(184, 50, 50, .08);
+      border: 1px solid rgba(184, 50, 50, .18);
+    }
+    .al-message.success {
+      color: #147348;
+      background: rgba(20, 115, 72, .08);
+      border: 1px solid rgba(20, 115, 72, .18);
+    }
+
+    /* ── Submit button — khớp với .btn.btn-primary của user ── */
+    .al-btn-submit {
+      width: 100%;
+      min-height: 46px;
+      margin-top: 8px;
+      background: #0f4f3f;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background .2s ease, transform .15s ease, box-shadow .2s ease;
+    }
+    .al-btn-submit:hover {
+      background: #0a3a2d;
+      box-shadow: 0 4px 14px rgba(15, 79, 63, .25);
+      transform: translateY(-1px);
+    }
+    .al-btn-submit:active { transform: translateY(0); }
+
+    /* ── Divider ── */
+    .al-divider {
+      margin: 20px 0 0;
+      padding-top: 18px;
+      border-top: 1px solid #e4e2db;
       text-align: center;
+      color: #7a7870;
+      font-size: 13px;
     }
+    .al-divider a {
+      color: #0f4f3f;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .al-divider a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 <main-content>
-  <div class="admin-login-container">
-    <form class="admin-login-form" method="post" th:action="@{/auth/login}">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+  <div class="admin-login-page">
+    <div class="admin-login-card">
+
       <div class="admin-login-header">
-        <h1><i class="fa-solid fa-bolt"></i></h1>
-        <h2>Admin Login</h2>
-      </div>
-
-      <div th:if="${error}" class="admin-error-msg" th:text="${error}"></div>
-      <div th:if="${message}" class="admin-error-msg" style="border-color: rgba(0, 200, 100, 0.3); color: #00c864;" th:text="${message}"></div>
-
-      <div class="admin-form-group">
-        <label for="loginId">Email hoặc tên đăng nhập:</label>
-        <input type="text" id="loginId" name="loginId" placeholder="admin hoặc admin@shop.com" required/>
-      </div>
-
-      <div class="admin-form-group">
-        <label for="password">Password:</label>
-        <div class="admin-password-field">
-          <input type="password" id="password" name="password" placeholder="******" required/>
-          <button class="admin-password-toggle" type="button" data-toggle-password="password" aria-label="Hiện mật khẩu">
-            <i class="fa-solid fa-eye"></i>
-          </button>
+        <div class="admin-login-badge">
+          <i class="fa-solid fa-shield-halved"></i> Quản trị viên
         </div>
+        <h2>Đăng nhập Admin</h2>
+        <p>Chỉ dành cho quản trị viên Hung Gaming Shop.</p>
       </div>
 
-      <button type="submit" class="admin-btn-login">
-        <i class="fa-solid fa-arrow-right"></i> Dang nhap
-      </button>
-    </form>
+      <form method="post" th:action="@{/admin/auth/login}">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div th:if="${error}" class="al-message error">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span th:text="${error}"></span>
+        </div>
+        <div th:if="${message}" class="al-message success">
+          <i class="fa-solid fa-circle-check"></i>
+          <span th:text="${message}"></span>
+        </div>
+
+        <div class="al-form-group">
+          <label for="loginId">Tên đăng nhập hoặc email</label>
+          <input type="text" id="loginId" name="loginId"
+                 placeholder="admin hoặc admin@shop.com" required/>
+        </div>
+
+        <div class="al-form-group">
+          <label for="password">Mật khẩu</label>
+          <div class="al-password-field">
+            <input type="password" id="password" name="password"
+                   placeholder="••••••" required/>
+            <button class="al-password-toggle" type="button"
+                    data-toggle-password="password" aria-label="Hiện mật khẩu">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="al-btn-submit">
+          <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
+        </button>
+      </form>
+
+    </div>
   </div>
 </main-content>
 <script>

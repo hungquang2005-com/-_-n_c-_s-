@@ -12,21 +12,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/admin/auth")
 public class AdminAuthController {
 
-    // Trang đăng nhập riêng cho admin
     @GetMapping("/login")
     public String loginPage(@RequestParam(required = false) String error,
                             @RequestParam(required = false) String logout,
                             Authentication auth,
                             Model model) {
 
-        // Nếu đã đăng nhập với role ADMIN thì vào thẳng dashboard
+        // Đã đăng nhập với ROLE_ADMIN → vào thẳng dashboard
         if (auth != null && auth.isAuthenticated()
                 && auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             return "redirect:/admin/dashboard";
         }
 
-        if (error != null) model.addAttribute("error", "Email hoặc mật khẩu không đúng!");
-        if (logout != null) model.addAttribute("message", "Đăng xuất thành công!");
+        if (error != null) {
+            model.addAttribute("error", "Tài khoản hoặc mật khẩu không đúng, hoặc bạn không có quyền Admin!");
+        }
+        if (logout != null) {
+            model.addAttribute("message", "Đăng xuất thành công!");
+        }
 
         return "admin/login";
     }
