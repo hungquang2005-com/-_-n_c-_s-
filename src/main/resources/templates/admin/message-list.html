@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: html(
+        pageTitle='Tin nhắn',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head><style></style></head>
+<body>
+<main-content>
+  <div class="message-header">
+    <div>
+      <span class="admin-kicker">Support inbox</span>
+      <h1><i class="fa-solid fa-message"></i> Tin nhắn khách hàng</h1>
+    </div>
+    <span class="soft-count" th:text="${messages != null ? messages.size() + ' tin nhắn' : '0 tin nhắn'}">0 tin nhắn</span>
+  </div>
+
+  <div th:if="${messages != null and messages.size() > 0}" class="message-grid">
+    <article class="message-card" th:each="msg : ${messages}" th:classappend="${msg.read ? '' : ' unread'}">
+      <div class="message-top">
+        <div>
+          <div class="message-name" th:text="${msg.name}">Khách hàng</div>
+          <div class="message-meta">
+            <a th:href="${'mailto:' + msg.email}" th:text="${msg.email}">email@example.com</a>
+            <span th:if="${msg.phone != null and !msg.phone.isBlank()}" th:text="${msg.phone}">0900000000</span>
+          </div>
+        </div>
+        <span class="message-state" th:text="${msg.read ? 'Đã đọc' : 'Mới'}">Mới</span>
+      </div>
+
+      <p class="message-body" th:text="${msg.message}">Nội dung tin nhắn</p>
+
+      <div class="message-foot">
+        <span th:text="${#temporals.format(msg.createdAt,'dd/MM/yyyy HH:mm')}">01/06/2026 09:00</span>
+        <div class="message-actions">
+          <form th:if="${!msg.read}" th:action="@{/admin/messages/{id}/read(id=${msg.id})}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="btn-edit"><i class="fa-solid fa-check"></i> Đã đọc</button>
+          </form>
+          <form th:action="@{/admin/messages/{id}/delete(id=${msg.id})}" method="post"
+                onsubmit="return confirm('Xóa tin nhắn này?')">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="btn-delete"><i class="fa-solid fa-trash"></i> Xóa</button>
+          </form>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div th:if="${messages == null or messages.size() == 0}" class="empty-message">
+    <i class="fa-solid fa-inbox"></i>
+    <p>Chưa có tin nhắn nào từ người dùng</p>
+  </div>
+</main-content>
+<script></script>
+</body>
+</html>

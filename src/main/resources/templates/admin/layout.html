@@ -5,32 +5,19 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Admin Dashboard - TechZone"/>
-  <title th:text="${pageTitle} + ' | Admin - TechZone'">Admin - TechZone</title>
+  <meta name="description" content="Admin Dashboard - Hung Gaming Shop"/>
+  <title th:text="${pageTitle} + ' | Admin - Hung Gaming Shop'">Admin - Hung Gaming Shop</title>
 
-  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>"/>
-
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-
-  <!-- Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
-  <!-- Admin CSS -->
   <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}"/>
   <link rel="stylesheet" th:href="@{/css/admin/auth.css}"/>
-
-  <!-- Page-specific CSS -->
   <th:block th:replace="${pageStyles}"></th:block>
 </head>
 <body>
-
-<!-- ═══════════════════════════════════════
-     FLASH ALERTS
-═══════════════════════════════════════ -->
 <div class="alert-container">
   <div th:if="${message}" class="alert alert-success">
     <i class="fa-solid fa-circle-check"></i>
@@ -44,9 +31,6 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     ADMIN NAVBAR
-═══════════════════════════════════════ -->
 <nav class="admin-navbar">
   <div class="admin-navbar-inner">
     <div class="admin-logo">
@@ -64,6 +48,11 @@
       <a th:href="@{/admin/orders}" class="admin-nav-link">
         <i class="fa-solid fa-receipt"></i> Đơn hàng
       </a>
+      <a th:href="@{/admin/messages}" class="admin-nav-link">
+        <i class="fa-solid fa-message"></i> Tin nhắn
+        <span class="nav-badge" th:if="${unreadMessageCount != null and unreadMessageCount > 0}"
+              th:text="${unreadMessageCount}">0</span>
+      </a>
     </div>
     <div class="admin-nav-right">
       <span class="admin-user-name" sec:authentication="name"></span>
@@ -77,27 +66,19 @@
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════
-     MAIN CONTENT
-═══════════════════════════════════════ -->
 <main class="admin-main">
   <div class="admin-container">
-    <!-- Page Content -->
     <th:block th:replace="${content}"></th:block>
   </div>
 </main>
 
-<!-- ═══════════════════════════════════════
-     FOOTER
-═══════════════════════════════════════ -->
 <footer class="admin-footer">
-  <p>&copy; 2025 TechZone Admin Dashboard. All rights reserved.</p>
+  <p>&copy; 2026 Hung Gaming Shop Admin Dashboard.</p>
 </footer>
 
-<!-- Page Scripts -->
 <script th:src="@{/js/admin/dashboard.js}"></script>
-<th:block th:if="${pageStyles != null}"
-          th:replace="${pageStyles}">
+<th:block th:if="${pageScripts != null}">
+    <div th:replace="${pageScripts}"></div>
 </th:block>
 </body>
 </html>

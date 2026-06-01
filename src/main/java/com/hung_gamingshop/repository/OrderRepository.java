@@ -28,6 +28,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
            "GROUP BY DATE(o.createdAt) ORDER BY DATE(o.createdAt) DESC")
     List<Object[]> getRevenueByDay();
 
+    @Query("SELECT DATE(o.createdAt), COUNT(o.id) " +
+           "FROM Order o GROUP BY DATE(o.createdAt) ORDER BY DATE(o.createdAt) DESC")
+    List<Object[]> getOrdersByDay();
+
     // Tổng số đơn hàng
     long countByStatus(Order.OrderStatus status);
 }

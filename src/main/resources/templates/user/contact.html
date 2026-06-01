@@ -53,7 +53,8 @@
       <div class="contact-item"><i class="fa-solid fa-truck-fast"></i><span>Giao hàng toàn quốc, hỗ trợ kiểm tra hàng khi nhận.</span></div>
     </div>
 
-    <form class="contact-card contact-form reveal-right" method="post" action="#">
+    <form class="contact-card contact-form reveal-right" method="post" th:action="@{/contact}">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
       <h2>Gửi yêu cầu</h2>
       <input type="text" name="name" placeholder="Họ và tên" required/>
       <input type="email" name="email" placeholder="Email" required/>

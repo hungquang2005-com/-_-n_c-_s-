@@ -12,16 +12,25 @@
       width: min(1180px, calc(100% - 32px));
       margin: 34px auto 60px;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
+      grid-template-columns: minmax(0, 1fr) 380px;
       gap: 24px;
       align-items: start;
     }
     .checkout-card {
-      padding: 26px;
+      position: relative;
+      overflow: hidden;
+      padding: clamp(22px, 3vw, 34px);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fff;
-      box-shadow: 0 12px 34px rgba(24, 31, 28, .08);
+      border-radius: 8px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 22px 60px rgba(24, 31, 28, .11);
+    }
+    .checkout-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 5px;
+      background: linear-gradient(90deg, var(--brand), var(--accent), var(--brand-2));
     }
     .checkout-title {
       display: flex;
@@ -35,6 +44,39 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 18px 24px;
+    }
+    .checkout-steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .checkout-step {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfaf6;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .checkout-step.active {
+      color: var(--brand);
+      background: rgba(15,79,63,.08);
+      border-color: rgba(15,79,63,.22);
+    }
+    .checkout-step i {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--brand);
     }
     .field.full { grid-column: 1 / -1; }
     .field label {
@@ -97,6 +139,12 @@
       border-radius: 8px;
       background: #fbfaf6;
       cursor: pointer;
+      transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+    }
+    .shipping-options label:hover {
+      border-color: rgba(15,79,63,.3);
+      box-shadow: 0 12px 26px rgba(24,31,28,.08);
+      transform: translateY(-1px);
     }
     .actions {
       display: flex;
@@ -169,6 +217,12 @@
     <form id="shippingForm" class="checkout-card" method="post" th:action="@{/checkout/payment}">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
       <input type="hidden" id="fullAddress" name="address"/>
+
+      <div class="checkout-steps">
+        <div class="checkout-step active"><i class="fa-solid fa-location-dot"></i><span>Thông tin</span></div>
+        <div class="checkout-step"><i class="fa-solid fa-wallet"></i><span>Thanh toán</span></div>
+        <div class="checkout-step"><i class="fa-solid fa-file-invoice"></i><span>Xác nhận</span></div>
+      </div>
 
       <h2 class="checkout-title"><i class="fa-solid fa-location-dot"></i> Địa chỉ nhận hàng</h2>
 

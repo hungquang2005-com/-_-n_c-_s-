@@ -23,6 +23,19 @@ CREATE TABLE IF NOT EXISTS users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ==========================================
+-- BẢNG CONTACT_MESSAGES (tin nhắn liên hệ)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS contact_messages (
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL,
+    email       VARCHAR(100) NOT NULL,
+    phone       VARCHAR(20),
+    message     TEXT NOT NULL,
+    is_read     BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ==========================================
 -- BẢNG PRODUCTS (sản phẩm)
 -- ==========================================
 CREATE TABLE IF NOT EXISTS products (

@@ -6,51 +6,320 @@
         pageScripts=~{::script},
         content=~{::main-content}
       )}">
-<head><style></style></head>
+<head>
+<style>
+.dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.admin-kicker {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6c7a96;
+  display: block;
+  margin-bottom: 4px;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 1.5rem;
+}
+.stat-card {
+  background: #fff;
+  border: 1px solid #e8edf5;
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.stat-card:hover {
+  box-shadow: 0 4px 18px rgba(50,80,160,0.09);
+  transform: translateY(-2px);
+}
+.stat-icon {
+  font-size: 22px;
+  color: #4e73df;
+  margin-bottom: 2px;
+}
+.stat-label {
+  font-size: 12px;
+  color: #8a95b0;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a2340;
+  line-height: 1.1;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+@media (max-width: 900px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+.dashboard-section {
+  background: #fff;
+  border: 1px solid #e8edf5;
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 0;
+}
+.section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a2340;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title i { color: #4e73df; }
+
+/* Chart type switcher */
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chart-type-btns {
+  display: flex;
+  gap: 4px;
+  background: #f0f3fb;
+  border-radius: 10px;
+  padding: 3px;
+}
+.chart-type-btn {
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c7a96;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.15s, color 0.15s;
+}
+.chart-type-btn.active {
+  background: #fff;
+  color: #4e73df;
+  box-shadow: 0 1px 4px rgba(50,80,160,0.10);
+}
+.chart-type-btn:hover:not(.active) {
+  color: #4e73df;
+}
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 260px;
+}
+
+/* Legend */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #6c7a96;
+}
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Recent orders table */
+.table-wrap { overflow-x: auto; }
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.admin-table thead tr {
+  background: #f5f7fb;
+  border-bottom: 2px solid #e8edf5;
+}
+.admin-table th {
+  padding: 10px 14px;
+  font-weight: 600;
+  color: #8a95b0;
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.admin-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid #f0f3fb;
+  color: #2a3550;
+  vertical-align: middle;
+}
+.admin-table tbody tr:last-child td { border-bottom: none; }
+.admin-table tbody tr:hover { background: #fafbff; }
+.order-amount { font-weight: 600; color: #2563eb; }
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.status-PENDING    { background:#fff7e6; color:#d97706; }
+.status-CONFIRMED  { background:#e6f0ff; color:#2563eb; }
+.status-SHIPPING   { background:#eef6ff; color:#0ea5e9; }
+.status-DELIVERED  { background:#ecfdf5; color:#059669; }
+.status-CANCELLED  { background:#fef2f2; color:#dc2626; }
+.empty-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 0;
+  color: #b0b8cc;
+  font-size: 14px;
+}
+.empty-message i { font-size: 32px; }
+.mb-section { margin-bottom: 20px; }
+
+/* Pie chart center (doughnut) */
+.doughnut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.doughnut-wrap canvas { flex-shrink: 0; }
+</style>
+</head>
 <body>
 <main-content>
+
+  <!-- Header -->
   <div class="dashboard-header">
-    <h1><i class="fa-solid fa-chart-line"></i> Dashboard</h1>
+    <div>
+      <span class="admin-kicker">Today overview</span>
+      <h1><i class="fa-solid fa-chart-line"></i> Dashboard</h1>
+    </div>
   </div>
 
+  <!-- Stats -->
   <div class="stats-grid">
     <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
       <div class="stat-label">Doanh thu</div>
       <div class="stat-value"
-           th:text="${totalRevenue} != null ? '₫' + ${#numbers.formatInteger(totalRevenue,0,'COMMA')} : '₫0'"></div>
+           th:text="${totalRevenue != null ? '₫' + #numbers.formatInteger(totalRevenue,0,'COMMA') : '₫0'}"></div>
     </div>
     <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-receipt"></i></div>
       <div class="stat-label">Tổng đơn hàng</div>
       <div class="stat-value" th:text="${totalOrders}"></div>
     </div>
     <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
       <div class="stat-label">Chờ xử lý</div>
       <div class="stat-value" th:text="${pendingOrders}"></div>
     </div>
     <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-box"></i></div>
       <div class="stat-label">Sản phẩm</div>
       <div class="stat-value" th:text="${totalProducts}"></div>
     </div>
     <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
       <div class="stat-label">Người dùng</div>
       <div class="stat-value" th:text="${totalUsers}"></div>
     </div>
   </div>
 
-  <div class="dashboard-section">
-    <div class="section-title">
-      <i class="fa-solid fa-chart-bar"></i> Biểu đồ doanh thu
+  <!-- Charts row -->
+  <div class="dashboard-grid mb-section">
+
+    <!-- Revenue chart -->
+    <div class="dashboard-section">
+      <div class="chart-header">
+        <div class="section-title" style="margin-bottom:0">
+          <i class="fa-solid fa-chart-bar"></i> Doanh thu theo ngày
+        </div>
+        <div class="chart-type-btns" id="revenueSwitcher">
+          <button class="chart-type-btn active" data-type="bar" onclick="switchChart('revenue','bar',this)">
+            <i class="fa-solid fa-chart-column"></i> Cột
+          </button>
+          <button class="chart-type-btn" data-type="line" onclick="switchChart('revenue','line',this)">
+            <i class="fa-solid fa-chart-line"></i> Đường
+          </button>
+          <button class="chart-type-btn" data-type="doughnut" onclick="switchChart('revenue','doughnut',this)">
+            <i class="fa-solid fa-chart-pie"></i> Tròn
+          </button>
+        </div>
+      </div>
+      <div class="chart-legend" id="revenueLegend"></div>
+      <div class="chart-wrap">
+        <canvas id="revenueChart"
+                role="img"
+                aria-label="Biểu đồ doanh thu theo ngày">Biểu đồ doanh thu theo ngày.</canvas>
+      </div>
     </div>
-    <div class="chart-placeholder">
-      <p>Chart visualization would render here</p>
+
+    <!-- Orders chart -->
+    <div class="dashboard-section">
+      <div class="chart-header">
+        <div class="section-title" style="margin-bottom:0">
+          <i class="fa-solid fa-calendar-days"></i> Lượt mua theo ngày
+        </div>
+        <div class="chart-type-btns" id="orderSwitcher">
+          <button class="chart-type-btn active" data-type="bar" onclick="switchChart('order','bar',this)">
+            <i class="fa-solid fa-chart-column"></i> Cột
+          </button>
+          <button class="chart-type-btn" data-type="line" onclick="switchChart('order','line',this)">
+            <i class="fa-solid fa-chart-line"></i> Đường
+          </button>
+          <button class="chart-type-btn" data-type="doughnut" onclick="switchChart('order','doughnut',this)">
+            <i class="fa-solid fa-chart-pie"></i> Tròn
+          </button>
+        </div>
+      </div>
+      <div class="chart-legend" id="orderLegend"></div>
+      <div class="chart-wrap">
+        <canvas id="orderChart"
+                role="img"
+                aria-label="Biểu đồ lượt mua theo ngày">Biểu đồ lượt mua theo ngày.</canvas>
+      </div>
     </div>
+
   </div>
 
-  <div class="dashboard-section">
+  <!-- Recent Orders -->
+  <div class="dashboard-section mb-section">
     <div class="section-title">
       <i class="fa-solid fa-receipt"></i> Đơn hàng gần đây
     </div>
-    <div th:if="${recentOrders != null and recentOrders.size() > 0}">
+    <div th:if="${recentOrders != null and recentOrders.size() > 0}" class="table-wrap">
       <table class="admin-table">
         <thead>
           <tr>
@@ -65,8 +334,12 @@
           <tr th:each="order : ${recentOrders}">
             <td th:text="'#' + ${order.id}"></td>
             <td th:text="${order.fullName}"></td>
-            <td class="order-amount" th:text="'₫' + ${#numbers.formatInteger(order.totalAmount,0,'COMMA')}"></td>
-            <td th:text="${order.status.displayName}"></td>
+            <td class="order-amount"
+                th:text="'₫' + ${#numbers.formatInteger(order.totalAmount,0,'COMMA')}"></td>
+            <td>
+              <span th:class="${'status-badge status-' + order.status.name()}"
+                    th:text="${order.status.displayName}"></span>
+            </td>
             <td th:text="${#temporals.format(order.createdAt,'dd/MM/yyyy HH:mm')}"></td>
           </tr>
         </tbody>
@@ -77,6 +350,187 @@
       <p>Chưa có đơn hàng nào</p>
     </div>
   </div>
+
+  <!-- Inject Thymeleaf data vào JS -->
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    var REVENUE_LABELS   = /*[[${chartLabels}]]*/ [];
+    var REVENUE_DATA     = /*[[${chartRevenues}]]*/ [];
+    var ORDER_LABELS     = /*[[${orderChartLabels}]]*/ [];
+    var ORDER_DATA       = /*[[${orderChartCounts}]]*/ [];
+    /*]]>*/
+  </script>
+
 </main-content>
+
+<script>
+/* ===== Load Chart.js từ CDN ===== */
+(function() {
+  var s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
+  s.onload = initCharts;
+  document.head.appendChild(s);
+})();
+
+/* ===== Palette ===== */
+var REV_COLORS  = ['#4e73df','#6a8ff5','#85abff','#3259c4','#2048b3','#90acff','#b8c9ff'];
+var ORD_COLORS  = ['#1bbf8f','#34d9a8','#52edc0','#0ea877','#0b8c64','#67f2cb','#9ff8e0'];
+
+/* ===== Chart instances ===== */
+var charts = {};
+
+function buildLegend(containerId, labels, colors) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = labels.map(function(l, i) {
+    return '<span class="chart-legend-item">' +
+      '<span class="legend-dot" style="background:' + colors[i % colors.length] + '"></span>' +
+      l +
+      '</span>';
+  }).join('');
+}
+
+function makeDataset(type, label, data, colors) {
+  if (type === 'bar') {
+    return {
+      label: label,
+      data: data,
+      backgroundColor: colors.slice(0, data.length),
+      borderRadius: 8,
+      borderSkipped: false,
+      borderWidth: 0
+    };
+  }
+  if (type === 'line') {
+    return {
+      label: label,
+      data: data,
+      borderColor: colors[0],
+      backgroundColor: colors[0] + '22',
+      borderWidth: 2.5,
+      pointBackgroundColor: colors[0],
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      fill: true,
+      tension: 0.4
+    };
+  }
+  /* doughnut */
+  return {
+    label: label,
+    data: data,
+    backgroundColor: colors.slice(0, data.length),
+    borderWidth: 2,
+    borderColor: '#fff',
+    hoverOffset: 6
+  };
+}
+
+function buildChart(canvasId, type, labels, data, colors, legendId, isCurrency) {
+  var ctx = document.getElementById(canvasId);
+  if (!ctx) return null;
+
+  var tickFmt = isCurrency
+    ? function(v) { return '₫' + Intl.NumberFormat('vi-VN').format(Math.round(v)); }
+    : function(v) { return Math.round(v); };
+
+  var tooltipFmt = isCurrency
+    ? function(ctx) { return '₫' + Intl.NumberFormat('vi-VN').format(Math.round(ctx.parsed.y ?? ctx.parsed)); }
+    : function(ctx) { return Math.round(ctx.parsed.y ?? ctx.parsed); };
+
+  var isPie = (type === 'doughnut');
+
+  var options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) {
+            if (isPie) {
+              return ' ' + labels[ctx.dataIndex] + ': ' + (isCurrency
+                ? '₫' + Intl.NumberFormat('vi-VN').format(Math.round(ctx.parsed))
+                : Math.round(ctx.parsed));
+            }
+            return tooltipFmt(ctx);
+          }
+        }
+      }
+    }
+  };
+
+  if (!isPie) {
+    options.scales = {
+      x: {
+        grid: { display: false },
+        ticks: {
+          color: '#8a95b0',
+          font: { size: 11 },
+          autoSkip: false,
+          maxRotation: 30
+        }
+      },
+      y: {
+        grid: { color: '#f0f3fb', lineWidth: 1 },
+        ticks: {
+          color: '#8a95b0',
+          font: { size: 11 },
+          callback: tickFmt
+        },
+        beginAtZero: true
+      }
+    };
+  }
+
+  buildLegend(legendId, labels, colors);
+
+  return new Chart(ctx, {
+    type: type,
+    data: {
+      labels: labels,
+      datasets: [makeDataset(type, '', data, colors)]
+    },
+    options: options
+  });
+}
+
+function initCharts() {
+  var revData  = (REVENUE_DATA  || []).map(function(v) { return parseFloat(v) || 0; });
+  var ordData  = (ORDER_DATA    || []).map(function(v) { return parseInt(v)   || 0; });
+  var revLabels = REVENUE_LABELS || [];
+  var ordLabels = ORDER_LABELS  || [];
+
+  charts['revenue'] = buildChart('revenueChart','bar', revLabels, revData, REV_COLORS, 'revenueLegend', true);
+  charts['order']   = buildChart('orderChart',  'bar', ordLabels, ordData, ORD_COLORS, 'orderLegend',   false);
+}
+
+function switchChart(key, type, btn) {
+  /* update active button */
+  var switcherId = key === 'revenue' ? 'revenueSwitcher' : 'orderSwitcher';
+  document.getElementById(switcherId).querySelectorAll('.chart-type-btn').forEach(function(b) {
+    b.classList.remove('active');
+  });
+  btn.classList.add('active');
+
+  /* destroy old chart */
+  if (charts[key]) {
+    charts[key].destroy();
+    charts[key] = null;
+  }
+
+  var canvasId  = key === 'revenue' ? 'revenueChart' : 'orderChart';
+  var legendId  = key === 'revenue' ? 'revenueLegend' : 'orderLegend';
+  var isCurrency = key === 'revenue';
+  var labels    = key === 'revenue' ? (REVENUE_LABELS || []) : (ORDER_LABELS || []);
+  var rawData   = key === 'revenue' ? (REVENUE_DATA   || []) : (ORDER_DATA  || []);
+  var colors    = key === 'revenue' ? REV_COLORS : ORD_COLORS;
+  var data      = rawData.map(function(v) {
+    return isCurrency ? parseFloat(v) || 0 : parseInt(v) || 0;
+  });
+
+  charts[key] = buildChart(canvasId, type, labels, data, colors, legendId, isCurrency);
+}
+</script>
 </body>
 </html>

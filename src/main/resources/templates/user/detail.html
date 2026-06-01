@@ -9,7 +9,7 @@
 <head><style></style></head>
 <body>
 <main-content>
-  <section class="detail-page section">
+  <section class="detail-page section detail-pro">
     <nav class="breadcrumb">
       <a th:href="@{/}">Trang chủ</a>
       <i class="fa-solid fa-chevron-right"></i>
@@ -18,37 +18,52 @@
       <span th:text="${product.name}">Tên sản phẩm</span>
     </nav>
 
-    <div class="detail-grid">
-      <div class="detail-media reveal-left">
-        <img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" th:alt="${product.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-        <div class="detail-fallback" th:style="${product.imageUrl != null} ? 'display:none' : ''"><i class="fa-solid fa-laptop-code"></i></div>
-        <span th:if="${product.isFeatured}" class="badge">Nổi bật</span>
+    <div class="detail-grid detail-pro-grid">
+      <div class="detail-media-wrap reveal-left">
+        <div class="detail-media">
+          <img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" th:alt="${product.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+          <div class="detail-fallback" th:style="${product.imageUrl != null} ? 'display:none' : ''"><i class="fa-solid fa-laptop-code"></i></div>
+          <span th:if="${product.isFeatured}" class="badge">Nổi bật</span>
+        </div>
+        <div class="detail-mini-strip">
+          <span><i class="fa-solid fa-box-open"></i> Kiểm hàng</span>
+          <span><i class="fa-solid fa-screwdriver-wrench"></i> Hỗ trợ setup</span>
+          <span><i class="fa-solid fa-headset"></i> Tư vấn nhanh</span>
+        </div>
       </div>
 
       <div class="detail-info reveal-right">
-        <span class="product-category" th:text="${product.category}">Category</span>
-        <h1 th:text="${product.name}">Tên sản phẩm</h1>
-        <p class="detail-brand" th:if="${product.brand != null}">Thương hiệu: <strong th:text="${product.brand}"></strong></p>
-        <strong class="detail-price" th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT') + ' ₫'}">0 ₫</strong>
-        <p class="stock ok" th:if="${product.stock > 0}"><i class="fa-solid fa-circle-check"></i> Còn hàng: <span th:text="${product.stock}"></span> sản phẩm</p>
-        <p class="stock out" th:if="${product.stock == 0}"><i class="fa-solid fa-circle-xmark"></i> Hết hàng</p>
+        <div class="detail-heading">
+          <span class="product-category" th:text="${product.category}">Category</span>
+          <h1 th:text="${product.name}">Tên sản phẩm</h1>
+          <p class="detail-brand" th:if="${product.brand != null}">Thương hiệu: <strong th:text="${product.brand}"></strong></p>
+        </div>
+
+        <div class="price-stock-row">
+          <strong class="detail-price" th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT') + ' ₫'}">0 ₫</strong>
+          <p class="stock ok" th:if="${product.stock > 0}"><i class="fa-solid fa-circle-check"></i> Còn <span th:text="${product.stock}"></span></p>
+          <p class="stock out" th:if="${product.stock == 0}"><i class="fa-solid fa-circle-xmark"></i> Hết hàng</p>
+        </div>
+
         <p class="detail-desc" th:if="${product.description != null}" th:text="${product.description}">Mô tả sản phẩm</p>
 
         <form th:if="${product.stock > 0}" th:action="@{/cart/add}" method="post" class="buy-box">
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
           <input type="hidden" name="productId" th:value="${product.id}"/>
-          <label>Số lượng</label>
-          <div class="qty-control">
-            <button type="button" class="qty-btn" data-action="minus">-</button>
-            <input class="qty-input" type="number" name="quantity" value="1" min="1" th:max="${product.stock}"/>
-            <button type="button" class="qty-btn" data-action="plus">+</button>
+          <div class="buy-row">
+            <label>Số lượng</label>
+            <div class="qty-control">
+              <button type="button" class="qty-btn" data-action="minus">-</button>
+              <input class="qty-input" type="number" name="quantity" value="1" min="1" th:max="${product.stock}"/>
+              <button type="button" class="qty-btn" data-action="plus">+</button>
+            </div>
           </div>
           <button type="submit" class="btn btn-primary btn-wide"><i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ hàng</button>
         </form>
 
         <div class="trust-grid">
           <span><i class="fa-solid fa-shield-halved"></i> Bảo hành 12-24 tháng</span>
-          <span><i class="fa-solid fa-truck-fast"></i> Giao hàng nhanh</span>
+          <span><i class="fa-solid fa-truck-fast"></i> Giao nhanh toàn quốc</span>
           <span><i class="fa-solid fa-rotate-left"></i> Đổi trả 7 ngày</span>
           <span><i class="fa-solid fa-certificate"></i> Chính hãng 100%</span>
         </div>
@@ -56,7 +71,10 @@
     </div>
 
     <div class="spec-card reveal" th:if="${product.specifications != null}">
-      <h2>Thông số kỹ thuật</h2>
+      <div>
+        <span class="product-category">Specifications</span>
+        <h2>Thông số kỹ thuật</h2>
+      </div>
       <p th:text="${product.specifications}"></p>
     </div>
   </section>

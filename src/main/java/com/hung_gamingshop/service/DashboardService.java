@@ -49,6 +49,24 @@ public class DashboardService {
         }
         stats.put("chartLabels", labels);
         stats.put("chartRevenues", revenues);
+        stats.put("chartMaxRevenue", revenues.stream()
+                .max(Comparator.naturalOrder())
+                .orElse(BigDecimal.ONE));
+
+        List<Object[]> ordersByDay = orderRepository.getOrdersByDay();
+        List<String> orderLabels = new ArrayList<>();
+        List<Long> orderCounts = new ArrayList<>();
+        int orderLimit = Math.min(ordersByDay.size(), 7);
+        for (int i = orderLimit - 1; i >= 0; i--) {
+            Object[] row = ordersByDay.get(i);
+            orderLabels.add(row[0].toString());
+            orderCounts.add(((Number) row[1]).longValue());
+        }
+        stats.put("orderChartLabels", orderLabels);
+        stats.put("orderChartCounts", orderCounts);
+        stats.put("orderChartMax", orderCounts.stream()
+                .max(Long::compareTo)
+                .orElse(1L));
 
         // Top sản phẩm bán chạy
         List<Object[]> topProducts = productRepository.findTopSellingProducts();
