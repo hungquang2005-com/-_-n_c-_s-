@@ -6,7 +6,104 @@
         pageScripts=~{::script},
         content=~{::main-content}
       )}">
-<head><style></style></head>
+<head>
+<style>
+/* Modal overlay */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.active {
+  display: flex;
+}
+.modal-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px;
+  min-width: 480px;
+  max-width: 560px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  position: relative;
+  animation: modalIn .22s ease;
+}
+@keyframes modalIn {
+  from { transform: translateY(-24px); opacity:0; }
+  to   { transform: translateY(0);     opacity:1; }
+}
+.modal-close {
+  position: absolute;
+  top: 16px; right: 18px;
+  background: none; border: none;
+  font-size: 20px; cursor: pointer;
+  color: #888;
+  transition: color .15s;
+}
+.modal-close:hover { color: #e74c3c; }
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.modal-title i { color: #3b82f6; }
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 20px;
+}
+.modal-field label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: #94a3b8;
+  display: block;
+  margin-bottom: 4px;
+}
+.modal-field span {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+.modal-divider {
+  border: none;
+  border-top: 1px solid #f1f5f9;
+  margin: 20px 0;
+}
+.modal-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.modal-badge.paid   { background:#dcfce7; color:#16a34a; }
+.modal-badge.unpaid { background:#fef9c3; color:#ca8a04; }
+.modal-badge.status-pending   { background:#fef3c7; color:#d97706; }
+.modal-badge.status-confirmed { background:#dbeafe; color:#2563eb; }
+.modal-badge.status-delivered { background:#dcfce7; color:#16a34a; }
+.modal-badge.status-cancelled { background:#fee2e2; color:#dc2626; }
+.modal-footer-note {
+  margin-top: 22px;
+  text-align: right;
+}
+.modal-footer-note a {
+  font-size: 0.85rem;
+  color: #3b82f6;
+  text-decoration: none;
+}
+.modal-footer-note a:hover { text-decoration: underline; }
+</style>
+</head>
 <body>
 <main-content>
   <div class="order-header">
@@ -42,6 +139,7 @@
           <td>
             <form th:action="@{/admin/orders/update-status/{id}(id=${order.id})}"
                   method="post" class="status-form">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
               <select name="status" class="status-select">
                 <option th:each="status : ${statuses}"
                         th:value="${status}"
@@ -53,9 +151,20 @@
           </td>
           <td th:text="${#temporals.format(order.createdAt,'dd/MM/yyyy HH:mm')}"></td>
           <td>
-            <a th:href="@{/admin/orders}" class="btn-edit">
+            <!-- Nút Xem: truyền data vào modal qua data attributes -->
+            <button type="button" class="btn-edit btn-view-order"
+                    th:attr="
+                      data-id=${order.id},
+                      data-customer=${order.fullName},
+                      data-amount=${'₫' + #numbers.formatInteger(order.totalAmount,0,'COMMA')},
+                      data-payment-method=${order.paymentMethod.displayName},
+                      data-payment-status=${order.paymentStatus.name()},
+                      data-payment-status-label=${order.paymentStatus.displayName},
+                      data-order-status=${order.status.name()},
+                      data-order-status-label=${order.status.displayName},
+                      data-created-at=${#temporals.format(order.createdAt,'dd/MM/yyyy HH:mm')}">
               <i class="fa-solid fa-eye"></i> Xem
-            </a>
+            </button>
           </td>
         </tr>
       </tbody>
@@ -66,6 +175,106 @@
     <i class="fa-solid fa-inbox"></i>
     <p>Không có đơn hàng nào</p>
   </div>
+
+  <!-- ===== MODAL CHI TIẾT ĐƠN HÀNG ===== -->
+  <div class="modal-overlay" id="orderModal">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose" title="Đóng">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal-title">
+        <i class="fa-solid fa-receipt"></i>
+        Chi tiết đơn hàng <span id="modal-order-id"></span>
+      </div>
+
+      <div class="modal-grid">
+        <div class="modal-field">
+          <label>Khách hàng</label>
+          <span id="modal-customer"></span>
+        </div>
+        <div class="modal-field">
+          <label>Ngày đặt</label>
+          <span id="modal-created-at"></span>
+        </div>
+        <div class="modal-field">
+          <label>Số tiền</label>
+          <span id="modal-amount" style="color:#3b82f6"></span>
+        </div>
+        <div class="modal-field">
+          <label>Phương thức thanh toán</label>
+          <span id="modal-payment-method"></span>
+        </div>
+        <div class="modal-field">
+          <label>Trạng thái thanh toán</label>
+          <span id="modal-payment-status"></span>
+        </div>
+        <div class="modal-field">
+          <label>Trạng thái đơn hàng</label>
+          <span id="modal-order-status"></span>
+        </div>
+      </div>
+
+      <hr class="modal-divider"/>
+      <div class="modal-footer-note">
+        <i class="fa-solid fa-circle-info" style="color:#94a3b8; margin-right:4px"></i>
+        <span style="font-size:0.82rem; color:#94a3b8">Thay đổi trạng thái trực tiếp ở bảng bên ngoài</span>
+      </div>
+    </div>
+  </div>
+
 </main-content>
+
+<script th:inline="javascript">
+document.addEventListener('DOMContentLoaded', function () {
+  const modal   = document.getElementById('orderModal');
+  const btnClose = document.getElementById('modalClose');
+
+  // Hàm badge trạng thái TT
+  function paymentBadge(name, label) {
+    const cls = name === 'PAID' ? 'paid' : 'unpaid';
+    return '<span class="modal-badge ' + cls + '">' + label + '</span>';
+  }
+
+  // Hàm badge trạng thái đơn
+  function orderStatusBadge(name, label) {
+    const map = {
+      'PENDING':   'status-pending',
+      'CONFIRMED': 'status-confirmed',
+      'DELIVERED': 'status-delivered',
+      'CANCELLED': 'status-cancelled'
+    };
+    const cls = map[name] || 'status-pending';
+    return '<span class="modal-badge ' + cls + '">' + label + '</span>';
+  }
+
+  // Click nút Xem
+  document.querySelectorAll('.btn-view-order').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.getElementById('modal-order-id').textContent  = '#' + btn.dataset.id;
+      document.getElementById('modal-customer').textContent  = btn.dataset.customer;
+      document.getElementById('modal-amount').textContent    = btn.dataset.amount;
+      document.getElementById('modal-payment-method').textContent = btn.dataset.paymentMethod;
+      document.getElementById('modal-created-at').textContent = btn.dataset.createdAt;
+
+      document.getElementById('modal-payment-status').innerHTML =
+        paymentBadge(btn.dataset.paymentStatus, btn.dataset.paymentStatusLabel);
+
+      document.getElementById('modal-order-status').innerHTML =
+        orderStatusBadge(btn.dataset.orderStatus, btn.dataset.orderStatusLabel);
+
+      modal.classList.add('active');
+    });
+  });
+
+  // Đóng modal
+  btnClose.addEventListener('click', function () { modal.classList.remove('active'); });
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) modal.classList.remove('active');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') modal.classList.remove('active');
+  });
+});
+</script>
 </body>
 </html>

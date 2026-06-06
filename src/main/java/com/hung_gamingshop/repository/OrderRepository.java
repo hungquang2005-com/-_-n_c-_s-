@@ -34,4 +34,38 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // Tổng số đơn hàng
     long countByStatus(Order.OrderStatus status);
+
+    // ── REVENUE PAGE ──────────────────────────────────────────────
+
+    // Doanh thu từng ngày trong 1 tháng cụ thể (ví dụ: tháng 5/2026)
+    @Query("SELECT DAY(o.createdAt), COALESCE(SUM(o.totalAmount), 0) " +
+           "FROM Order o WHERE o.paymentStatus = 'PAID' " +
+           "AND YEAR(o.createdAt) = :year AND MONTH(o.createdAt) = :month " +
+           "GROUP BY DAY(o.createdAt) ORDER BY DAY(o.createdAt) ASC")
+    List<Object[]> getRevenueByDayInMonth(@org.springframework.data.repository.query.Param("year") int year,
+                                          @org.springframework.data.repository.query.Param("month") int month);
+
+    // Doanh thu từng tháng trong 1 năm cụ thể (ví dụ: năm 2026)
+    @Query("SELECT MONTH(o.createdAt), COALESCE(SUM(o.totalAmount), 0) " +
+           "FROM Order o WHERE o.paymentStatus = 'PAID' " +
+           "AND YEAR(o.createdAt) = :year " +
+           "GROUP BY MONTH(o.createdAt) ORDER BY MONTH(o.createdAt) ASC")
+    List<Object[]> getRevenueByMonthInYear(@org.springframework.data.repository.query.Param("year") int year);
+
+    // Doanh thu từng năm (tất cả)
+    @Query("SELECT YEAR(o.createdAt), COALESCE(SUM(o.totalAmount), 0) " +
+           "FROM Order o WHERE o.paymentStatus = 'PAID' " +
+           "GROUP BY YEAR(o.createdAt) ORDER BY YEAR(o.createdAt) ASC")
+    List<Object[]> getRevenueByYear();
+
+    // Tổng đơn + doanh thu trong tháng (cho stat card)
+    @Query("SELECT COUNT(o.id), COALESCE(SUM(o.totalAmount), 0) " +
+           "FROM Order o WHERE o.paymentStatus = 'PAID' " +
+           "AND YEAR(o.createdAt) = :year AND MONTH(o.createdAt) = :month")
+    List<Object[]> getMonthSummary(@org.springframework.data.repository.query.Param("year") int year,
+                                   @org.springframework.data.repository.query.Param("month") int month);
+
+    // Danh sách năm có dữ liệu
+    @Query("SELECT DISTINCT YEAR(o.createdAt) FROM Order o ORDER BY YEAR(o.createdAt) DESC")
+    List<Integer> getDistinctYears();
 }

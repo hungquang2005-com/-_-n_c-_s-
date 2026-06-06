@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: html(
+        pageTitle='Quản lý Người dùng',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head>
+<style>
+.user-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+.user-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.user-header h1 i { color: #3b82f6; }
+.user-count-badge {
+  background: #eff6ff;
+  color: #3b82f6;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  padding: 5px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Badge vai trò */
+.role-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.role-badge.admin { background:#fef3c7; color:#d97706; }
+.role-badge.user  { background:#eff6ff; color:#3b82f6; }
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px;
+  min-width: 440px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  position: relative;
+  animation: modalIn .22s ease;
+}
+@keyframes modalIn {
+  from { transform: translateY(-24px); opacity:0; }
+  to   { transform: translateY(0);     opacity:1; }
+}
+.modal-close {
+  position: absolute; top:16px; right:18px;
+  background:none; border:none;
+  font-size:20px; cursor:pointer;
+  color:#888; transition:color .15s;
+}
+.modal-close:hover { color:#e74c3c; }
+.modal-title {
+  font-size: 1.2rem; font-weight: 700;
+  color: #1e293b; margin-bottom: 22px;
+  display: flex; align-items: center; gap: 10px;
+}
+.modal-title i { color: #3b82f6; }
+.modal-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.4rem; font-weight: 700;
+  margin: 0 auto 20px;
+}
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 20px;
+}
+.modal-field label {
+  font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .05em;
+  color: #94a3b8; display: block; margin-bottom: 4px;
+}
+.modal-field span {
+  font-size: 0.95rem; font-weight: 600; color: #1e293b;
+}
+.modal-field.full { grid-column: 1 / -1; }
+.modal-divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+</style>
+</head>
+<body>
+<main-content>
+  <div class="user-header">
+    <h1><i class="fa-solid fa-users"></i> Quản lý Người dùng</h1>
+    <span class="user-count-badge">
+      <i class="fa-solid fa-user"></i>
+      Tổng: <span th:text="${totalUsers}">0</span> người dùng
+    </span>
+  </div>
+
+  <div th:if="${users != null and users.size() > 0}">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Họ tên</th>
+          <th>Tên đăng nhập</th>
+          <th>Số điện thoại</th>
+          <th>Email</th>
+          <th>Vai trò</th>
+          <th>Ngày tạo</th>
+          <th>Chi tiết</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="user : ${users}">
+          <td th:text="${user.id}"></td>
+          <td th:text="${user.fullName}"></td>
+          <td th:text="${user.username}"></td>
+          <td th:text="${user.phone != null ? user.phone : '—'}"></td>
+          <td th:text="${user.email}"></td>
+          <td>
+            <span class="role-badge"
+                  th:classappend="${user.role.name() == 'ADMIN' ? 'admin' : 'user'}"
+                  th:text="${user.role.name() == 'ADMIN' ? 'Admin' : 'Người dùng'}">
+            </span>
+          </td>
+          <td th:text="${user.createdAt != null ? #temporals.format(user.createdAt,'dd/MM/yyyy') : '—'}"></td>
+          <td>
+            <button type="button" class="btn-edit btn-view-user"
+                    th:attr="
+                      data-id=${user.id},
+                      data-fullname=${user.fullName},
+                      data-username=${user.username},
+                      data-email=${user.email},
+                      data-phone=${user.phone != null ? user.phone : '—'},
+                      data-role=${user.role.name()},
+                      data-created-at=${user.createdAt != null ? #temporals.format(user.createdAt,'dd/MM/yyyy HH:mm') : '—'}">
+              <i class="fa-solid fa-eye"></i> Xem
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div th:if="${users == null or users.size() == 0}" class="empty-message">
+    <i class="fa-solid fa-users-slash"></i>
+    <p>Không có người dùng nào</p>
+  </div>
+
+  <!-- ===== MODAL CHI TIẾT NGƯỜI DÙNG ===== -->
+  <div class="modal-overlay" id="userModal">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="modal-title">
+        <i class="fa-solid fa-user-circle"></i>
+        Thông tin người dùng #<span id="modal-user-id"></span>
+      </div>
+
+      <div class="modal-avatar" id="modal-avatar"></div>
+
+      <div class="modal-grid">
+        <div class="modal-field">
+          <label>Họ tên</label>
+          <span id="modal-fullname"></span>
+        </div>
+        <div class="modal-field">
+          <label>Tên đăng nhập</label>
+          <span id="modal-username"></span>
+        </div>
+        <div class="modal-field full">
+          <label>Email</label>
+          <span id="modal-email"></span>
+        </div>
+        <div class="modal-field">
+          <label>Số điện thoại</label>
+          <span id="modal-phone"></span>
+        </div>
+        <div class="modal-field">
+          <label>Vai trò</label>
+          <span id="modal-role"></span>
+        </div>
+        <div class="modal-field">
+          <label>Ngày đăng ký</label>
+          <span id="modal-created-at"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main-content>
+
+<script th:inline="javascript">
+document.addEventListener('DOMContentLoaded', function () {
+  const modal    = document.getElementById('userModal');
+  const btnClose = document.getElementById('modalClose');
+
+  function roleBadge(role) {
+    if (role === 'ADMIN') {
+      return '<span class="role-badge admin">Admin</span>';
+    }
+    return '<span class="role-badge user">Người dùng</span>';
+  }
+
+  document.querySelectorAll('.btn-view-user').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const fullname = btn.dataset.fullname || '';
+      document.getElementById('modal-user-id').textContent   = btn.dataset.id;
+      document.getElementById('modal-fullname').textContent  = fullname;
+      document.getElementById('modal-username').textContent  = btn.dataset.username;
+      document.getElementById('modal-email').textContent     = btn.dataset.email;
+      document.getElementById('modal-phone').textContent     = btn.dataset.phone;
+      document.getElementById('modal-created-at').textContent = btn.dataset.createdAt;
+      document.getElementById('modal-role').innerHTML        = roleBadge(btn.dataset.role);
+
+      // Avatar: chữ cái đầu của tên
+      document.getElementById('modal-avatar').textContent =
+        fullname.trim().charAt(0).toUpperCase() || '?';
+
+      modal.classList.add('active');
+    });
+  });
+
+  btnClose.addEventListener('click', function () { modal.classList.remove('active'); });
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) modal.classList.remove('active');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') modal.classList.remove('active');
+  });
+});
+</script>
+</body>
+</html>

@@ -48,6 +48,12 @@
       <a th:href="@{/admin/orders}" class="admin-nav-link">
         <i class="fa-solid fa-receipt"></i> Đơn hàng
       </a>
+      <a th:href="@{/admin/revenue}" class="admin-nav-link">
+        <i class="fa-solid fa-chart-column"></i> Doanh thu
+      </a>
+      <a th:href="@{/admin/users}" class="admin-nav-link">
+        <i class="fa-solid fa-users"></i> Người dùng
+      </a>
       <a th:href="@{/admin/messages}" class="admin-nav-link">
         <i class="fa-solid fa-message"></i> Tin nhắn
         <span class="nav-badge" th:if="${unreadMessageCount != null and unreadMessageCount > 0}"

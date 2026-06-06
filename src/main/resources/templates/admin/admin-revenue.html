@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: html(
+        pageTitle='Doanh thu',
+        pageStyles=~{::style},
+        pageScripts=~{::script},
+        content=~{::main-content}
+      )}">
+<head>
+<style>
+/* ── Header ── */
+.revenue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.revenue-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.revenue-header h1 i { color: #4e73df; }
+
+/* ── Bộ lọc ── */
+.filter-bar {
+  background: #fff;
+  border: 1px solid #e8edf5;
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.filter-group label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: #8a95b0;
+  white-space: nowrap;
+}
+.filter-select {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1e293b;
+  background: #f8fafc;
+  cursor: pointer;
+  outline: none;
+  transition: border .15s;
+}
+.filter-select:focus { border-color: #4e73df; }
+
+/* Tab view type */
+.view-tabs {
+  display: flex;
+  gap: 4px;
+  background: #f0f3fb;
+  border-radius: 10px;
+  padding: 3px;
+  margin-left: auto;
+}
+.view-tab {
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c7a96;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background .15s, color .15s;
+  text-decoration: none;
+}
+.view-tab.active {
+  background: #fff;
+  color: #4e73df;
+  box-shadow: 0 1px 4px rgba(50,80,160,.10);
+}
+.view-tab:hover:not(.active) { color: #4e73df; }
+
+/* ── Stat cards ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.stat-card {
+  background: #fff;
+  border: 1px solid #e8edf5;
+  border-radius: 14px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: box-shadow .2s, transform .2s;
+}
+.stat-card:hover {
+  box-shadow: 0 4px 18px rgba(50,80,160,.09);
+  transform: translateY(-2px);
+}
+.stat-icon { font-size: 22px; color: #4e73df; margin-bottom: 2px; }
+.stat-label {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .06em; color: #8a95b0;
+}
+.stat-value { font-size: 22px; font-weight: 700; color: #1a2340; line-height: 1.1; }
+.stat-sub   { font-size: 11px; color: #94a3b8; }
+
+/* ── Biểu đồ ── */
+.chart-section {
+  background: #fff;
+  border: 1px solid #e8edf5;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 22px;
+}
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chart-title {
+  font-size: 14px; font-weight: 700; color: #1a2340;
+  display: flex; align-items: center; gap: 8px;
+}
+.chart-title i { color: #4e73df; }
+.chart-type-btns {
+  display: flex; gap: 4px;
+  background: #f0f3fb; border-radius: 10px; padding: 3px;
+}
+.chart-type-btn {
+  border: none; background: transparent; border-radius: 8px;
+  padding: 5px 12px; font-size: 12px; font-weight: 600; color: #6c7a96;
+  cursor: pointer; display: flex; align-items: center; gap: 5px;
+  transition: background .15s, color .15s;
+}
+.chart-type-btn.active { background:#fff; color:#4e73df; box-shadow:0 1px 4px rgba(50,80,160,.10); }
+.chart-type-btn:hover:not(.active) { color: #4e73df; }
+.chart-legend {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-bottom: 12px; font-size: 12px; color: #6c7a96;
+}
+.chart-legend-item { display:flex; align-items:center; gap:5px; }
+.legend-dot { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+.chart-wrap { position:relative; width:100%; height:320px; }
+
+/* ── Bảng chi tiết ── */
+.table-section {
+  background: #fff;
+  border: 1px solid #e8edf5;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 22px;
+}
+.table-section-title {
+  font-size: 14px; font-weight: 700; color: #1a2340;
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 16px;
+}
+.table-section-title i { color: #4e73df; }
+.revenue-table {
+  width: 100%; border-collapse: collapse; font-size: 13.5px;
+}
+.revenue-table thead tr { background: #f5f7fb; border-bottom: 2px solid #e8edf5; }
+.revenue-table th {
+  padding: 10px 16px; font-weight: 600; color: #8a95b0;
+  text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em;
+}
+.revenue-table td {
+  padding: 11px 16px; border-bottom: 1px solid #f0f3fb;
+  color: #2a3550; vertical-align: middle;
+}
+.revenue-table tbody tr:last-child td { border-bottom: none; }
+.revenue-table tbody tr:hover { background: #fafbff; }
+.revenue-amount { font-weight: 700; color: #2563eb; }
+.revenue-zero   { color: #c0cce0; font-style: italic; }
+
+/* Thanh progress */
+.progress-bar-wrap {
+  background: #f0f3fb; border-radius: 999px;
+  height: 6px; min-width: 60px; overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, #4e73df, #6a8ff5);
+  transition: width .4s ease;
+}
+</style>
+</head>
+<body>
+<main-content>
+
+  <!-- Header -->
+  <div class="revenue-header">
+    <h1><i class="fa-solid fa-chart-column"></i> Doanh thu</h1>
+  </div>
+
+  <!-- Bộ lọc -->
+  <div class="filter-bar">
+
+    <!-- Chọn năm -->
+    <div class="filter-group">
+      <label><i class="fa-solid fa-calendar"></i> Năm</label>
+      <select class="filter-select" id="yearSelect">
+        <option th:each="y : ${availableYears}"
+                th:value="${y}"
+                th:text="${y}"
+                th:selected="${y == selectedYear}"></option>
+      </select>
+    </div>
+
+    <!-- Chọn tháng (ẩn khi view = year) -->
+    <div class="filter-group" id="monthGroup"
+         th:style="${viewType == 'year'} ? 'display:none' : ''">
+      <label><i class="fa-solid fa-calendar-days"></i> Tháng</label>
+      <select class="filter-select" id="monthSelect">
+        <option th:each="m : ${#numbers.sequence(1,12)}"
+                th:value="${m}"
+                th:text="${'Tháng ' + m}"
+                th:selected="${m == selectedMonth}"></option>
+      </select>
+    </div>
+
+    <!-- Tab: Theo ngày / Theo tháng / Theo năm -->
+    <div class="view-tabs">
+      <button class="view-tab" id="tab-day"
+              th:classappend="${viewType=='day'} ? ' active' : ''"
+              onclick="applyFilter('day')">
+        <i class="fa-solid fa-calendar-day"></i> Theo ngày
+      </button>
+      <button class="view-tab" id="tab-month"
+              th:classappend="${viewType=='month'} ? ' active' : ''"
+              onclick="applyFilter('month')">
+        <i class="fa-solid fa-calendar-week"></i> Theo tháng
+      </button>
+      <button class="view-tab" id="tab-year"
+              th:classappend="${viewType=='year'} ? ' active' : ''"
+              onclick="applyFilter('year')">
+        <i class="fa-solid fa-calendar"></i> Theo năm
+      </button>
+    </div>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
+      <div class="stat-label">Tổng doanh thu toàn thời gian</div>
+      <div class="stat-value"
+           th:text="${totalRevenue != null ? '₫' + #numbers.formatInteger(totalRevenue,0,'COMMA') : '₫0'}"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+      <div class="stat-label" th:text="${chartTitle}">Doanh thu kỳ này</div>
+      <div class="stat-value"
+           th:text="${summaryRevenue != null ? '₫' + #numbers.formatInteger(summaryRevenue,0,'COMMA') : '₫0'}"></div>
+      <div class="stat-sub" th:if="${viewType == 'day'}"
+           th:text="'Tháng ' + ${selectedMonth} + '/' + ${selectedYear}"></div>
+      <div class="stat-sub" th:if="${viewType == 'month'}"
+           th:text="'Năm ' + ${selectedYear}"></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fa-solid fa-receipt"></i></div>
+      <div class="stat-label">Số đơn đã thanh toán</div>
+      <div class="stat-value" th:text="${summaryOrders}">0</div>
+      <div class="stat-sub" th:if="${viewType == 'day'}"
+           th:text="'trong tháng ' + ${selectedMonth} + '/' + ${selectedYear}"></div>
+      <div class="stat-sub" th:if="${viewType == 'month'}"
+           th:text="'trong năm ' + ${selectedYear}"></div>
+    </div>
+  </div>
+
+  <!-- Biểu đồ -->
+  <div class="chart-section">
+    <div class="chart-header">
+      <div class="chart-title">
+        <i class="fa-solid fa-chart-bar"></i>
+        <span th:text="${chartTitle}">Biểu đồ doanh thu</span>
+      </div>
+      <div class="chart-type-btns" id="revenueSwitcher">
+        <button class="chart-type-btn active" onclick="switchChart('bar',this)">
+          <i class="fa-solid fa-chart-column"></i> Cột
+        </button>
+        <button class="chart-type-btn" onclick="switchChart('line',this)">
+          <i class="fa-solid fa-chart-line"></i> Đường
+        </button>
+        <button class="chart-type-btn" onclick="switchChart('doughnut',this)">
+          <i class="fa-solid fa-chart-pie"></i> Tròn
+        </button>
+      </div>
+    </div>
+    <div class="chart-legend" id="chartLegend"></div>
+    <div class="chart-wrap">
+      <canvas id="revenueChart" role="img" aria-label="Biểu đồ doanh thu"></canvas>
+    </div>
+  </div>
+
+  <!-- Bảng chi tiết -->
+  <div class="table-section">
+    <div class="table-section-title">
+      <i class="fa-solid fa-table"></i> Chi tiết doanh thu
+    </div>
+
+    <div th:if="${chartLabels != null and chartLabels.size() > 0}">
+      <table class="revenue-table">
+        <thead>
+          <tr>
+            <th>Kỳ</th>
+            <th>Doanh thu</th>
+            <th>Tỷ lệ</th>
+          </tr>
+        </thead>
+        <tbody id="revenueTableBody">
+          <!-- Render bằng JS để đồng bộ với chartLabels/chartRevenues -->
+        </tbody>
+      </table>
+    </div>
+
+    <div th:if="${chartLabels == null or chartLabels.size() == 0}"
+         style="text-align:center;padding:40px 0;color:#b0b8cc">
+      <i class="fa-solid fa-chart-area" style="font-size:32px;display:block;margin-bottom:8px"></i>
+      Không có dữ liệu trong kỳ này
+    </div>
+  </div>
+
+  <!-- Thymeleaf → JS -->
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    var CHART_LABELS   = /*[[${chartLabels}]]*/   [];
+    var CHART_REVENUES = /*[[${chartRevenues}]]*/ [];
+    var VIEW_TYPE      = /*[[${viewType}]]*/       'day';
+    /*]]>*/
+  </script>
+
+</main-content>
+
+<script>
+(function () {
+  /* Load Chart.js */
+  var s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
+  s.onload = init;
+  document.head.appendChild(s);
+})();
+
+var COLORS = ['#4e73df','#6a8ff5','#5c86f0','#3259c4','#2048b3',
+              '#85abff','#90acff','#b8c9ff','#a0bcff','#7ca4f4',
+              '#6090ee','#4d7de8','#3a6ae0'];
+
+var chartInstance = null;
+
+function buildLegend(labels, colors) {
+  var el = document.getElementById('chartLegend');
+  if (!el) return;
+  el.innerHTML = labels.map(function (l, i) {
+    return '<span class="chart-legend-item">' +
+      '<span class="legend-dot" style="background:' + colors[i % colors.length] + '"></span>' +
+      l + '</span>';
+  }).join('');
+}
+
+function makeDataset(type, data, colors) {
+  if (type === 'bar') {
+    return {
+      data: data,
+      backgroundColor: data.map(function (_, i) { return colors[i % colors.length]; }),
+      borderRadius: 8, borderSkipped: false, borderWidth: 0
+    };
+  }
+  if (type === 'line') {
+    return {
+      data: data,
+      borderColor: colors[0],
+      backgroundColor: colors[0] + '22',
+      borderWidth: 2.5,
+      pointBackgroundColor: colors[0],
+      pointRadius: 4, pointHoverRadius: 7,
+      fill: true, tension: 0.4
+    };
+  }
+  /* doughnut */
+  return {
+    data: data,
+    backgroundColor: data.map(function (_, i) { return colors[i % colors.length]; }),
+    borderWidth: 2, borderColor: '#fff', hoverOffset: 6
+  };
+}
+
+function buildChart(type) {
+  var ctx = document.getElementById('revenueChart');
+  if (!ctx) return;
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+  var labels  = CHART_LABELS  || [];
+  var rawData = CHART_REVENUES || [];
+  var data    = rawData.map(function (v) { return parseFloat(v) || 0; });
+  var isPie   = (type === 'doughnut');
+
+  buildLegend(labels, COLORS);
+
+  var fmt = function (v) {
+    return '₫' + Intl.NumberFormat('vi-VN').format(Math.round(v));
+  };
+
+  var options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function (ctx) {
+            var val = isPie ? ctx.parsed : (ctx.parsed.y ?? ctx.parsed);
+            return ' ' + (isPie ? labels[ctx.dataIndex] + ': ' : '') + fmt(val);
+          }
+        }
+      }
+    }
+  };
+
+  if (!isPie) {
+    options.scales = {
+      x: {
+        grid: { display: false },
+        ticks: {
+          color: '#8a95b0', font: { size: 11 },
+          autoSkip: true, maxRotation: 35, maxTicksLimit: 20
+        }
+      },
+      y: {
+        grid: { color: '#f0f3fb', lineWidth: 1 },
+        ticks: {
+          color: '#8a95b0', font: { size: 11 },
+          callback: function (v) {
+            if (v >= 1e9) return '₫' + (v / 1e9).toFixed(1) + 'T';
+            if (v >= 1e6) return '₫' + (v / 1e6).toFixed(0) + 'M';
+            return '₫' + Intl.NumberFormat('vi-VN').format(v);
+          }
+        },
+        beginAtZero: true
+      }
+    };
+  }
+
+  chartInstance = new Chart(ctx, {
+    type: type,
+    data: {
+      labels: labels,
+      datasets: [makeDataset(type, data, COLORS)]
+    },
+    options: options
+  });
+}
+
+function switchChart(type, btn) {
+  document.getElementById('revenueSwitcher')
+    .querySelectorAll('.chart-type-btn')
+    .forEach(function (b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  buildChart(type);
+}
+
+/* ── Bảng chi tiết ── */
+function buildTable() {
+  var tbody = document.getElementById('revenueTableBody');
+  if (!tbody) return;
+
+  var labels  = CHART_LABELS  || [];
+  var rawData = CHART_REVENUES || [];
+  var data    = rawData.map(function (v) { return parseFloat(v) || 0; });
+
+  // Tính tổng để ra tỷ lệ % đóng góp của từng kỳ
+  var total = data.reduce(function (acc, v) { return acc + v; }, 0);
+
+  tbody.innerHTML = data.map(function (v, i) {
+    var pct = total > 0 ? Math.round((v / total) * 100) : 0;
+    var amtStr = v > 0
+      ? '<span class="revenue-amount">₫' + Intl.NumberFormat('vi-VN').format(Math.round(v)) + '</span>'
+      : '<span class="revenue-zero">—</span>';
+    return '<tr>' +
+      '<td>' + (labels[i] || '') + '</td>' +
+      '<td>' + amtStr + '</td>' +
+      '<td style="min-width:140px">' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+          '<div class="progress-bar-wrap" style="flex:1">' +
+            '<div class="progress-bar-fill" style="width:' + pct + '%"></div>' +
+          '</div>' +
+          '<span style="font-size:11px;color:#8a95b0;width:36px;text-align:right">' +
+            (v > 0 ? pct + '%' : '—') +
+          '</span>' +
+        '</div>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function init() {
+  buildChart('bar');
+  buildTable();
+}
+
+/* ── Bộ lọc ── */
+function applyFilter(viewType) {
+  var year  = document.getElementById('yearSelect').value;
+  var month = document.getElementById('monthSelect').value;
+  var url   = '/admin/revenue?viewType=' + viewType + '&year=' + year + '&month=' + month;
+  window.location.href = url;
+}
+
+/* Ẩn/hiện dropdown tháng khi đổi tab */
+document.addEventListener('DOMContentLoaded', function () {
+  var monthGroup = document.getElementById('monthGroup');
+
+  /* Sync active tab UI (đã render bởi Thymeleaf, nhưng bổ sung cho JS click) */
+  document.querySelectorAll('.view-tab').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var type = btn.id.replace('tab-', '');
+      monthGroup.style.display = (type === 'year') ? 'none' : '';
+    });
+  });
+
+  /* Khi đổi năm/tháng từ select → tự reload */
+  document.getElementById('yearSelect').addEventListener('change', function () {
+    applyFilter(VIEW_TYPE);
+  });
+  document.getElementById('monthSelect').addEventListener('change', function () {
+    applyFilter(VIEW_TYPE);
+  });
+});
+</script>
+</body>
+</html>

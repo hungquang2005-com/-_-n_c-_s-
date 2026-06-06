@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{user/layout :: layout(
@@ -39,6 +40,9 @@
       outline: 0;
       background: #fbfaf6;
       color: var(--ink);
+      font-size: 15px;
+      box-sizing: border-box;
+      transition: border-color .15s, box-shadow .15s;
     }
     .form-group input:focus {
       border-color: rgba(15, 79, 63, .36);
@@ -60,6 +64,9 @@
       place-items: center;
       color: var(--muted);
       border-radius: 50%;
+      border: none;
+      background: none;
+      cursor: pointer;
       transform: translateY(-50%);
       transition: color .2s ease, background .2s ease;
     }
@@ -97,7 +104,8 @@
 <body>
 <main-content>
   <section class="auth-container">
-    <form class="auth-form" method="post" th:action="@{/auth/login}">
+    <!-- autocomplete="on" cho phép trình duyệt gợi ý tài khoản đã lưu -->
+    <form class="auth-form" method="post" th:action="@{/auth/login}" autocomplete="on">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
       <div class="auth-header">
@@ -110,14 +118,21 @@
 
       <div class="form-group">
         <label for="loginId">Ten dang nhap hoac email</label>
-        <input type="text" id="loginId" name="loginId" placeholder="username hoac your@email.com" required/>
+        <!-- autocomplete="off" lúc load → JS đổi thành "username" sau 100ms để chặn autofill tự động -->
+        <input type="text" id="loginId" name="loginId"
+               autocomplete="off"
+               placeholder="username hoac your@email.com" required/>
       </div>
 
       <div class="form-group">
         <label for="password">Mat khau</label>
         <div class="password-field">
-          <input type="password" id="password" name="password" placeholder="******" required/>
-          <button class="password-toggle" type="button" data-toggle-password="password" aria-label="Hien mat khau">
+          <!-- autocomplete="off" lúc load → JS đổi thành "current-password" sau 100ms -->
+          <input type="password" id="password" name="password"
+                 autocomplete="off"
+                 placeholder="******" required/>
+          <button class="password-toggle" type="button"
+                  data-toggle-password="password" aria-label="Hien mat khau">
             <i class="fa-solid fa-eye"></i>
           </button>
         </div>
@@ -134,16 +149,51 @@
   </section>
 </main-content>
 <script>
-document.querySelectorAll('[data-toggle-password]').forEach((button) => {
-  button.addEventListener('click', () => {
-    const input = document.getElementById(button.dataset.togglePassword);
-    const icon = button.querySelector('i');
-    const show = input.type === 'password';
-    input.type = show ? 'text' : 'password';
-    icon.className = show ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-    button.setAttribute('aria-label', show ? 'An mat khau' : 'Hien mat khau');
+(function () {
+  const loginId = document.getElementById('loginId');
+  const password = document.getElementById('password');
+
+  // ── Bước 1: Clear ngay lập tức khi DOM sẵn sàng ──
+  // Trình duyệt autofill thường inject sau DOMContentLoaded hoặc load,
+  // nên ta clear liên tục trong 600ms để đảm bảo chặn được.
+  function clearFields() {
+    if (loginId.value) loginId.value = '';
+    if (password.value) password.value = '';
+  }
+  clearFields();
+  const clearTimer = setInterval(clearFields, 50);
+  setTimeout(() => {
+    clearInterval(clearTimer);
+    // ── Bước 2: Sau 600ms, bật lại autocomplete để dropdown gợi ý hoạt động khi user click ──
+    loginId.setAttribute('autocomplete', 'username');
+    password.setAttribute('autocomplete', 'current-password');
+  }, 600);
+
+  // ── Bước 3: Khi user focus vào field, clear thêm 1 lần nữa phòng trường hợp trình duyệt inject trễ ──
+  [loginId, password].forEach(input => {
+    input.addEventListener('focus', () => {
+      // Nếu field có giá trị mà user chưa gõ gì (do autofill trễ), xóa đi
+      if (input.dataset.userTyped !== 'true' && input.value) {
+        input.value = '';
+      }
+    });
+    input.addEventListener('input', () => {
+      input.dataset.userTyped = 'true';
+    });
   });
-});
+
+  // ── Toggle hiện/ẩn mật khẩu ──
+  document.querySelectorAll('[data-toggle-password]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const inp = document.getElementById(button.dataset.togglePassword);
+      const icon = button.querySelector('i');
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      icon.className = show ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+      button.setAttribute('aria-label', show ? 'An mat khau' : 'Hien mat khau');
+    });
+  });
+})();
 </script>
 </body>
 </html>
