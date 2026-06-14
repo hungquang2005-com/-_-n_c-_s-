@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS payments (
 -- Password: admin123 (đã bcrypt)
 -- ==========================================
 INSERT INTO users (full_name, username, email, password, phone, role) VALUES
-('Admin', 'admin', 'admin@shop.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '0123456789', 'ADMIN');
+('Admin', 'admin', 'admin@shop.com', '$2y$10$LWQZYFzJIEAHz82DT/FyMuruKVE.Aai.mteU4aZEdIEyUnbZa5K1G', '0123456789', 'ADMIN');
 
 -- ==========================================
 -- DỮ LIỆU MẪU - SẢN PHẨM

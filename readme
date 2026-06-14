@@ -1,3 +1,19 @@
+//Hướng dẫn chạy dự án môn đồ án cơ sở//
+
+Bước 1: tạo bảng trong "http://localhost/phpmyadmin" (mở xampp bật mysql và apache lên rồi vào link http://localhost/phpmyadmin)
+
+Bước 2: tạo bảng có tên "hunggaming_shop" sau đó import file schema.sql và nhấn go, bảng sẽ đc tạo và có những dữ liệu mẫu.
+
+Bước 3: sau khi tạo  bảng xong vào vscode bật terminal rồi  gõ lệnh" mvn spring-boot:run" 
+
+Bước 4: sau khi chạy lệnh xong:
+--trang user truy cập cổng 8090 = http://localhost:8090
+--trang admin truy cập cổng 8090 = http://localhost:8090/admin(tên đang nhập: admin or admin@shop.com ,mật khẩu: admin123)
+
+(lưu ý mở 2 trang chome riêng biệt , một trang vào user, một trang vào admin)
+
+--Cấu trúc thư mục
+
 hung_gamingshop/
 ├── pom.xml
 ├── src/

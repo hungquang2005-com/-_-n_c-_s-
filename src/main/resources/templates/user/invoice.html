@@ -47,7 +47,6 @@
     }
 
     .invoice-section-title {
-      font-size: 1rem;
       font-weight: 600;
       margin-bottom: 1rem;
       color: var(--text-secondary);
@@ -85,7 +84,7 @@
     .invoice-items-table th {
       text-align: left;
       padding: 0.75rem;
-      background: rgba(0, 212, 255, 0.05);
+      background: rgba(255, 255, 255, 0.04);
       border-bottom: 1px solid var(--border);
       font-size: 0.85rem;
       font-weight: 600;
@@ -94,7 +93,7 @@
 
     .invoice-items-table td {
       padding: 1rem 0.75rem;
-      border-bottom: 1px solid rgba(0, 212, 255, 0.05);
+      border-bottom: 1px solid var(--border);
     }
 
     .invoice-total {
@@ -104,8 +103,8 @@
     }
 
     .invoice-total-box {
-      background: rgba(0, 212, 255, 0.08);
-      border: 1px solid rgba(0, 212, 255, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.5rem 2rem;
       text-align: right;
@@ -120,13 +119,13 @@
 
     .invoice-total-amount {
       font-size: 2rem;
-      color: var(--accent);
+      color: var(--text-primary);
       font-weight: 700;
     }
 
     .payment-method-box {
-      background: rgba(0, 212, 255, 0.05);
-      border: 1px solid rgba(0, 212, 255, 0.15);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1rem;
       margin-top: 1rem;
@@ -302,7 +301,7 @@
 
             <td style="
                     text-align: right;
-                    color: var(--accent);
+                    color: var(--text-primary);
                     font-weight: 600;"
                 th:text="'₫' + ${#numbers.formatInteger(item.subtotal, 0)}">
             </td>
@@ -340,7 +339,8 @@
 
             <div style="
                     font-weight: 600;
-                    margin-top: 0.5rem;"
+                    margin-top: 0.5rem;
+                    color: var(--text-primary);"
                  th:text="${paymentMethod}">
             </div>
 
